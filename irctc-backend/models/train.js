@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 
-const Arrangement=mongoose.Schema({
-    price:'Number',
-    seats:'Number'
-})
 const Train = mongoose.Schema({
   trainName:'String',
   trainNumber:'String',

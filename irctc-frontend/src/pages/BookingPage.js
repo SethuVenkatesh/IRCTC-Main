@@ -13,10 +13,14 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import TrainCard from '../components/TrainCard';
+import api from '../axios';
+import TrainSchedule from '../components/TrainSchedule';
 
 //dummy commit 
 const BookingPage = () => {
   const location=useLocation()
+
+  const [searchTrains,setSearchTrains]=useState([])
   const [searchItem,setSearchItem]=useState()
   const [arrow,setArrow]=useState(false)
 
@@ -67,10 +71,24 @@ const BookingPage = () => {
   }
   useEffect(()=>{
     setSearchItem(location.state)
+    var searchParams=location.state
+    api.post("/booking/train_list",{searchParams}).then((res)=>{
+        setSearchTrains(res.data)
+
+    }).catch(err=>{
+        console.log(err)
+    })
   },[])
+  const [showSchedule,setShowSchedule]=useState(false)
+  const [scheduleDetails,setScheduleDetails]=useState()
+
 
   return (
     <div className=''>
+        {
+            showSchedule &&
+            <TrainSchedule showSchedule={showSchedule} setShowSchedule={setShowSchedule} scheduleDetails={scheduleDetails}/>
+        }
         <Navbar/>
     
         <div className='mt-28 p-2 border-gray-300'>
@@ -313,9 +331,13 @@ const BookingPage = () => {
                                 <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold flex items-center justify-center'>Next Day <NavigateNextIcon/></p>
                             </div>
                         </div>
-                        <TrainCard/>
-                        <TrainCard/>
-                        <TrainCard/>
+                        {
+                            searchTrains.map((train)=>{
+                                return(
+                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails}/>
+                                )
+                            })
+                        }
                     </div>
                 }
             </div>

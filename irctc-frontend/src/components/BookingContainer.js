@@ -59,7 +59,7 @@ const BookingContainer = () => {
     }
 
     const handleSearch=()=>{
-        navigate('/booking/train-list',{state:searchItem})
+        navigate('/booking/train_list',{state:searchItem})
     }
 
     useEffect(()=>{

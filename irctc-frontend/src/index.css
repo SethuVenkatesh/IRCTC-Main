@@ -18,6 +18,17 @@ input[type='checkbox']:checked + label{
 .service-menu-icon{
     font-size: 32px !important;
 }
+.seating-overflow::-webkit-scrollbar {
+    height: 5px;
+}
+   
+.seating-overflow::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+   
+.seating-overflow::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+}
 @media only screen  and (max-width:1247px){
     .nav-menu{
         display: none;
