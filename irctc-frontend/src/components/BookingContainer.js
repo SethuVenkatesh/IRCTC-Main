@@ -10,7 +10,6 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 
-
 const BookingContainer = () => {
     const [searchItem,setSearchItem]=useState({
         from:'',
