@@ -3,25 +3,43 @@ import { useState,useEffect } from 'react';
 import RefreshIcon from '@mui/icons-material/Refresh';
 const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails}) => {
     const [duration,setDuration]=useState()
+    function formatDuration(durationMinutes) {
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+      
+        const formattedDuration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        return formattedDuration;
+      }
+      
     useEffect(()=>{
-        const timeString1 = details.startTime;
-        const timeString2 = details.endTime;
+        let times=[details.startTime]
+        for(let station=0;station<details.intermediateStation.length;station++){
+            times.push(details.intermediateStation[station].stationTime)
+        }
+        times.push(details.endTime)
+        let totalDuration=0;
+       for(let i=1;i<times.length;i++){
+        const [startHours, startMinutes] = times[i - 1].split(':').map(Number);
+        const [endHours, endMinutes] = times[i].split(':').map(Number);
+  
+        const startTotalMinutes = startHours * 60 + startMinutes;
+        const endTotalMinutes = endHours * 60 + endMinutes;
+  
 
-        const time1 = new Date(`2000-01-01T${timeString1}:00`);
-        const time2 = new Date(`2000-01-01T${timeString2}:00`);
-
-        const timeDifference = Math.abs(time1 - time2);
-
-        // Convert the time difference to hours and minutes
-        const minutes = Math.floor(timeDifference / (1000 * 60));
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        setDuration(hours+":"+remainingMinutes)
-
-        // console.log(`The time difference is ${hours} hours and ${remainingMinutes} minutes.`);
+        let durationMinutes;
+        if (endTotalMinutes >= startTotalMinutes) {
+            durationMinutes = endTotalMinutes - startTotalMinutes;
+        } else {
+            durationMinutes = (24 * 60 - startTotalMinutes) + endTotalMinutes;
+        }
+        totalDuration += durationMinutes;
+    }   
+       const finalDuration = formatDuration(totalDuration);
+       setDuration(finalDuration)
 
 
     },[])
+
   return (
     <div className='border border-gray-300 mb-4'>
         <div className='flex items-center justify-between p-2 bg-[#f5f5f5]'>

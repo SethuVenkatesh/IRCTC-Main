@@ -7,14 +7,14 @@ const TrainSchedule = ({showSchedule,setShowSchedule,scheduleDetails}) => {
         <div className='fixed inset-0 bg-black opacity-50 z-20'>
 
         </div>
-        <div className='min-w-[60%] max-w-[75%] flex flex-col  z-40 h-[50%] overflow-x-auto'>
+        <div className='min-w-[60%] max-w-[75%] flex flex-col  z-40 h-[50%] '>
             <div className='text-white bg-[#213d77] px-4 py-2 flex items-center justify-between'>
                 <p className=''>
                     Train Schedule
                 </p>
                 <CloseIcon onClick={()=>setShowSchedule(false)}/>
             </div>
-            <div className='p-4 bg-white'>
+            <div className='p-4 bg-white overflow-x-auto'>
                 <div className='mb-8'> 
                     <div className='columns-5 p-2 bg-[#213d77] text-white font-semibold'>
                         <p>Train Number</p>
