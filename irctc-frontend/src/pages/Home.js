@@ -9,6 +9,7 @@ const Home = () => {
     <div className='min-h-screen w-full'>
         <Navbar/>
         <BookingContainer/>
+        <p>Srthu</p>
         <ServiceContainer/>
         <HolidayContainer/>
         <Footer/>
