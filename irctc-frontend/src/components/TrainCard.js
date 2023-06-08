@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { StationCodeToStationName } from '../constants';
 const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,searchItem}) => {
     const [duration,setDuration]=useState()
     const [startTime,setStartTime]=useState()
@@ -22,13 +23,17 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                 times.push(details.intermediateStation[station].stationTime)
             }
             times.push(details.endTime)
+            setStartTime(details.startTime)
+            setEndTime(details.endTime)
         }
         else if(details.sourceCode==searchItem.from){
+            setStartTime(details.startTime)
             times.push(details.startTime)
             for(let station=0;station<details.intermediateStation.length;station++){
                 times.push(details.intermediateStation[station].stationTime)
                 if(searchItem.to==details.intermediateStation[station].stationCode)
                 {
+                    setEndTime(details.intermediateStation[station].stationTime)
                     break;
                 }
             }
@@ -40,12 +45,14 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                 if(searchItem.from==details.intermediateStation[station].stationCode)
                 {
                     isReached=true
+                    setStartTime(details.intermediateStation[station].stationTime)
                 }
                 if(isReached){
                     times.push(details.intermediateStation[station].stationTime)
                 }
             }
             times.push(details.endTime)
+            setEndTime(details.endTime)
         }
         else{
             let isStartReached=false;
@@ -53,12 +60,14 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                 if(searchItem.from==details.intermediateStation[station].stationCode)
                 {
                     isStartReached=true
+                    setStartTime(details.intermediateStation[station].stationTime)
                 }
                 if(isStartReached){
                     times.push(details.intermediateStation[station].stationTime)
                 }
                 if(searchItem.to==details.intermediateStation[station].stationCode)
                 {
+                    setEndTime(details.intermediateStation[station].stationTime)
                     break;
                 }
             }
@@ -111,9 +120,9 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         </div>
         <div>
             <div className='flex items-center justify-between p-2 mb-2'>
-                <p className='capitalize text-lg'><span className='font-semibold'>{details.startTime} | </span>Madurai Jn | May 26</p>
+                <p className='capitalize text-lg'><span className='font-semibold'>{startTime} | </span>{StationCodeToStationName[searchItem.from]} | {searchItem.date.toDateString()}</p>
                 <p className='text-base'>_____ {duration} _____</p>
-                <p className='capitalize text-lg'><span className='font-semibold'>{details.endTime} | </span>Chennai Jn | May 26</p>
+                <p className='capitalize text-lg'><span className='font-semibold'>{endTime} | </span>{StationCodeToStationName[searchItem.to]} | {searchItem.date.toDateString()}</p>
             </div>
             <div className='flex items-center gap-x-2 p-2 mb-2 overflow-x-auto seating-overflow'>
 
