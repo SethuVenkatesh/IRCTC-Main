@@ -3,7 +3,7 @@ const mongoose=require('mongoose')
 const cors=require('cors')
 const bodyParser=require('body-parser')
 
-
+const PORT=3001
 //mongodb connection
 
 mongoose.connect('mongodb+srv://admin:admin@cluster0.hi9dbus.mongodb.net/?retryWrites=true&w=majority',
@@ -32,7 +32,7 @@ app.use('/booking',booking)
 
 
 //end points
-app.listen(3001,(req,res)=>{
-    console.log("Listening on port 3001")
+app.listen(PORT,(req,res)=>{
+    console.log(`Listening on port ${PORT}`)
 })
 

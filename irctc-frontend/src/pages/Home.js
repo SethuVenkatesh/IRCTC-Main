@@ -12,7 +12,6 @@ const Home = () => {
         <ServiceContainer/>
         <HolidayContainer/>
         <Footer/>
-        
     </div>
   )
 }

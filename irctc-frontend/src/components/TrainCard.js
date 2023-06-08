@@ -1,8 +1,11 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
 import RefreshIcon from '@mui/icons-material/Refresh';
-const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails}) => {
+const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,searchItem}) => {
     const [duration,setDuration]=useState()
+    const [startTime,setStartTime]=useState()
+    const [endTime,setEndTime]=useState()
+
     function formatDuration(durationMinutes) {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
@@ -12,12 +15,56 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails}) =>
       }
       
     useEffect(()=>{
-        let times=[details.startTime]
-        for(let station=0;station<details.intermediateStation.length;station++){
-            times.push(details.intermediateStation[station].stationTime)
+        let times=[]
+        if(details.sourceCode==searchItem.from && details.destinationCode==searchItem.to){
+            times.push(details.startTime)
+            for(let station=0;station<details.intermediateStation.length;station++){
+                times.push(details.intermediateStation[station].stationTime)
+            }
+            times.push(details.endTime)
         }
-        times.push(details.endTime)
+        else if(details.sourceCode==searchItem.from){
+            times.push(details.startTime)
+            for(let station=0;station<details.intermediateStation.length;station++){
+                times.push(details.intermediateStation[station].stationTime)
+                if(searchItem.to==details.intermediateStation[station].stationCode)
+                {
+                    break;
+                }
+            }
+        }
+        else if(details.destinationCode==searchItem.to)
+        {
+            let isReached=false;
+            for(let station=0;station<details.intermediateStation.length;station++){
+                if(searchItem.from==details.intermediateStation[station].stationCode)
+                {
+                    isReached=true
+                }
+                if(isReached){
+                    times.push(details.intermediateStation[station].stationTime)
+                }
+            }
+            times.push(details.endTime)
+        }
+        else{
+            let isStartReached=false;
+            for(let station=0;station<details.intermediateStation.length;station++){
+                if(searchItem.from==details.intermediateStation[station].stationCode)
+                {
+                    isStartReached=true
+                }
+                if(isStartReached){
+                    times.push(details.intermediateStation[station].stationTime)
+                }
+                if(searchItem.to==details.intermediateStation[station].stationCode)
+                {
+                    break;
+                }
+            }
+        }
         let totalDuration=0;
+        console.log(times)
        for(let i=1;i<times.length;i++){
         const [startHours, startMinutes] = times[i - 1].split(':').map(Number);
         const [endHours, endMinutes] = times[i].split(':').map(Number);

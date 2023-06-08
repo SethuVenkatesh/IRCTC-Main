@@ -16,7 +16,6 @@ import TrainCard from '../components/TrainCard';
 import api from '../axios';
 import TrainSchedule from '../components/TrainSchedule';
 
-//dummy commit 
 const BookingPage = () => {
   const location=useLocation()
 
@@ -67,8 +66,17 @@ const BookingPage = () => {
   }
 
   const handleSearch=()=>{
-    
+    var searchParams=searchItem
+    setSearchTrains([])
+    api.post("/booking/train_list",{searchParams}).then((res)=>{
+        setSearchTrains(res.data)
+
+    }).catch(err=>{
+        console.log(err)
+    })
   }
+
+
   useEffect(()=>{
     setSearchItem(location.state)
     var searchParams=location.state
@@ -334,7 +342,7 @@ const BookingPage = () => {
                         {
                             searchTrains.map((train)=>{
                                 return(
-                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails}/>
+                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails} searchItem={searchItem}/>
                                 )
                             })
                         }
