@@ -7,7 +7,6 @@ import Footer from '../components/Footer'
 const Home = () => {
   return (
     <div className='min-h-screen w-full'>
-        <Navbar/>
         <BookingContainer/>
         <ServiceContainer/>
         <HolidayContainer/>

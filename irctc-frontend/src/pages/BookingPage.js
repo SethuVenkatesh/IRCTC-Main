@@ -96,9 +96,7 @@ const BookingPage = () => {
         {
             showSchedule &&
             <TrainSchedule showSchedule={showSchedule} setShowSchedule={setShowSchedule} scheduleDetails={scheduleDetails}/>
-        }
-        <Navbar/>
-    
+        }    
         <div className='mt-28 p-2 border-gray-300'>
             {
                 searchItem &&
