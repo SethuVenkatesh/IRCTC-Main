@@ -143,7 +143,7 @@ const UpdateTrain = () => {
   }
   return (
     train &&
-    <div className='container p-4'>
+    <div className='container p-4 mt-28'>
       <InputContainer labelName="Train Name" type="text" value={train.trainName} name="trainName" setTrain={setTrain} train={train}/>
       <InputContainer labelName="Train Number" type="text" value={train.trainNumber} name="trainNumber" setTrain={setTrain} train={train}/>
       <InputContainer labelName="Source Station Code" type="text" value={train.sourceCode} name='sourceCode' setTrain={setTrain} train={train}/>

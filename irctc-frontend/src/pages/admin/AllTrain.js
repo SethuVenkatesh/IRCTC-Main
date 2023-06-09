@@ -36,7 +36,7 @@ const AllTrain = () => {
         navigate('/train/new')
     }
     return (
-        <div className='p-4'>
+        <div className='p-4 mt-28'>
             <button className='px-4 py-2 bg-blue-500 rounded-md text-white font-semibold mb-4' onClick={handleNew}>Create New Train</button>
             {
                 trains.map((train)=>{
