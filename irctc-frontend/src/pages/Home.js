@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import BookingContainer from '../components/BookingContainer'
 import ServiceContainer from '../components/ServiceContainer'
 import HolidayContainer from '../components/HolidayContainer'
+import SearchSelect from '../components/Dummy'
 import Footer from '../components/Footer'
 const Home = () => {
   return (

@@ -16,6 +16,8 @@ import TrainCard from '../components/TrainCard';
 import api from '../axios';
 import TrainSchedule from '../components/TrainSchedule';
 
+import { StationCodeToStationName } from '../constants';
+
 const BookingPage = () => {
   const location=useLocation()
 
@@ -23,14 +25,14 @@ const BookingPage = () => {
   const [searchItem,setSearchItem]=useState()
   const [arrow,setArrow]=useState(false)
 
-
   const [classdropDown,setclassDropDown]=useState(false)
   const [quotadropDown,setquotaDropDown]=useState(false);
   const classdropDownOptions=["All Classes","Anubhuti Class (EA)","AC First Class (1A)",'Vistadome AC (EV)',"Exec. Chair Car (EC)","AC 2 Tier (2A)","First Class (FC)","AC 3 Tier (3A)","AC 3 Economy (3E)","Vistadome Chair Car (VC)","AC Chair Car (CC)","Sleeper (SL)","Vistadome Non AC (VS)","Second Sitting (2s)"];
   const quotadropDownOptions=["General","Ladies",'Takal',"Premium Takal","Person With Disability","Lower Birth/SR. Citizen"];
   const [classOption,setClassOption]=useState(classdropDownOptions[0])
   const [quotaOption,setQuotaOption]=useState(quotadropDownOptions[0])
-
+  
+  const [searchItemDetails,setSearchItemDetails]=useState()
 
   //Filter States
   const [journeyClass,setJourneyClass]=useState(true)
@@ -67,6 +69,7 @@ const BookingPage = () => {
 
   const handleSearch=()=>{
     var searchParams=searchItem
+    setSearchItemDetails({...searchItem})
     setSearchTrains([])
     api.post("/booking/train_list",{searchParams}).then((res)=>{
         setSearchTrains(res.data)
@@ -80,16 +83,29 @@ const BookingPage = () => {
   useEffect(()=>{
     setSearchItem(location.state)
     var searchParams=location.state
+    setSearchItemDetails(searchParams)
     api.post("/booking/train_list",{searchParams}).then((res)=>{
         setSearchTrains(res.data)
 
     }).catch(err=>{
         console.log(err)
     })
-  },[])
+},[])
   const [showSchedule,setShowSchedule]=useState(false)
   const [scheduleDetails,setScheduleDetails]=useState()
 
+
+const handlePreviousNext=(move)=>{
+    let newDate=new Date(searchItem.date)
+    if(move=='next'){
+        newDate.setDate(newDate.getDate() + 1);
+    }
+    else{
+        newDate.setDate(newDate.getDate() - 1);
+    }
+    setSearchItem({...searchItem,date:newDate})
+    handleSearch()
+}
 
   return (
     <div className=''>
@@ -324,23 +340,23 @@ const BookingPage = () => {
 
                 {/* Train Lists */}
                 {
-                    searchItem &&
+                    searchItemDetails &&
                     <div className='w-3/4 p-2'>
-                        <p className='mb-2 capitalize font-normal text-gray-900'>15 results from <span className='font-bold'>{searchItem.from} <TrendingFlatIcon/> {searchItem.to} | {searchItem.date.toDateString()} </span>for quota | general</p>
+                        <p className='mb-2 capitalize font-normal text-gray-900'>{searchTrains.length} results from <span className='font-bold'>{StationCodeToStationName[searchItemDetails.from]} <TrendingFlatIcon/> {StationCodeToStationName[searchItemDetails.to]} | {searchItemDetails.date.toDateString()} </span>for quota | general</p>
                         <div className='flex items-center justify-between mb-4'>
                             <div className='flex gap-x-2'>
                                 <p className='border border-gray-300 px-4 py-2 bg-[#213d77]  text-sm font-semibold text-white'>Sort By | Duration</p>
                                 <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold'>Show Avalilable Train</p>
                             </div>
                             <div className='flex gap-x-2'>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5] text-sm font-semibold flex items-center justify-center'><NavigateBeforeIcon/> Previous Day</p>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold flex items-center justify-center'>Next Day <NavigateNextIcon/></p>
+                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5] text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("prev")}><NavigateBeforeIcon/> Previous Day</p>
+                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("next")}>Next Day <NavigateNextIcon/></p>
                             </div>
                         </div>
                         {
                             searchTrains.map((train)=>{
                                 return(
-                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails} searchItem={searchItem}/>
+                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails} searchItemDetails={searchItemDetails}/>
                                 )
                             })
                         }

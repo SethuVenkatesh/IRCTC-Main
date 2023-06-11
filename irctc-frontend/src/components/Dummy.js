@@ -1,13 +1,52 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
+import Select from 'react-select';
+import NearMeIcon from '@mui/icons-material/NearMe';
 
-function MySelect() {
+const SearchSelect = ({fieldText,searchItem,setSearchItem}) => {
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const options = [
+    { value: 'MDU', label: 'Madurai Jn - MDU',icon:<NearMeIcon/>},
+    { value: 'MS', label: 'Chennai Egmore - MS' },
+    { value: 'SDN', label: 'Sholavandan - SDN' },
+    { value: 'DG', label: 'Dindigul Jn - DG' },
+  ];
+
+
+  useEffect(()=>{
+    for(let i=0;i<options.length;i++){
+      if(fieldText ==='From' && options[i].value===searchItem.from){
+        setSelectedOption(options[i])
+      }
+      else if(fieldText ==='To' && options[i].value===searchItem.to){
+        setSelectedOption(options[i])
+      }
+    }
+  },[searchItem])
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    if(fieldText=='From'){
+      setSearchItem({...searchItem,"from":selectedOption.value,"fromStationName":selectedOption.label})
+    }else{
+      setSearchItem({...searchItem,"to":selectedOption.value,"toStationName":selectedOption.label})
+    }
+  };
+  console.log(searchItem)
+
+
   return (
-    <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-      <option className="py-2 px-4 bg-gray-100 hover:bg-gray-200">Option 1</option>
-      <option className="py-2 px-4 bg-gray-100 hover:bg-gray-200">Option 2</option>
-      <option className="py-2 px-4 bg-gray-100 hover:bg-gray-200">Option 3</option>
-    </select>
+    <div className='px-4 py-2 w-2/5	'>
+      <h1 className='text-sm text-blue-600 '>{fieldText}</h1>
+      <Select
+        options={options}
+        value={selectedOption}
+        onChange={handleSelectChange}
+        isSearchable
+        placeholder="Search"
+      />
+    </div>
   );
-}
+};
 
-export default MySelect;
+export default SearchSelect;

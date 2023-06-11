@@ -2,11 +2,11 @@ import React from 'react'
 import { useState,useEffect } from 'react';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { StationCodeToStationName } from '../constants';
-const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,searchItem}) => {
+const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,searchItemDetails}) => {
     const [duration,setDuration]=useState()
     const [startTime,setStartTime]=useState()
     const [endTime,setEndTime]=useState()
-
+    const [endDate,setEndDate]=useState()
     function formatDuration(durationMinutes) {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
@@ -17,7 +17,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
       
     useEffect(()=>{
         let times=[]
-        if(details.sourceCode==searchItem.from && details.destinationCode==searchItem.to){
+        if(details.sourceCode==searchItemDetails.from && searchItemDetails.destinationCode==searchItemDetails.to){
             times.push(details.startTime)
             for(let station=0;station<details.intermediateStation.length;station++){
                 times.push(details.intermediateStation[station].stationTime)
@@ -26,23 +26,23 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
             setStartTime(details.startTime)
             setEndTime(details.endTime)
         }
-        else if(details.sourceCode==searchItem.from){
+        else if(details.sourceCode==searchItemDetails.from){
             setStartTime(details.startTime)
             times.push(details.startTime)
             for(let station=0;station<details.intermediateStation.length;station++){
                 times.push(details.intermediateStation[station].stationTime)
-                if(searchItem.to==details.intermediateStation[station].stationCode)
+                if(searchItemDetails.to==details.intermediateStation[station].stationCode)
                 {
                     setEndTime(details.intermediateStation[station].stationTime)
                     break;
                 }
             }
         }
-        else if(details.destinationCode==searchItem.to)
+        else if(details.destinationCode==searchItemDetails.to)
         {
             let isReached=false;
             for(let station=0;station<details.intermediateStation.length;station++){
-                if(searchItem.from==details.intermediateStation[station].stationCode)
+                if(searchItemDetails.from==details.intermediateStation[station].stationCode)
                 {
                     isReached=true
                     setStartTime(details.intermediateStation[station].stationTime)
@@ -57,7 +57,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         else{
             let isStartReached=false;
             for(let station=0;station<details.intermediateStation.length;station++){
-                if(searchItem.from==details.intermediateStation[station].stationCode)
+                if(searchItemDetails.from==details.intermediateStation[station].stationCode)
                 {
                     isStartReached=true
                     setStartTime(details.intermediateStation[station].stationTime)
@@ -65,7 +65,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                 if(isStartReached){
                     times.push(details.intermediateStation[station].stationTime)
                 }
-                if(searchItem.to==details.intermediateStation[station].stationCode)
+                if(searchItemDetails.to==details.intermediateStation[station].stationCode)
                 {
                     setEndTime(details.intermediateStation[station].stationTime)
                     break;
@@ -74,6 +74,8 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         }
         let totalDuration=0;
         console.log(times)
+
+
        for(let i=1;i<times.length;i++){
         const [startHours, startMinutes] = times[i - 1].split(':').map(Number);
         const [endHours, endMinutes] = times[i].split(':').map(Number);
@@ -91,10 +93,37 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         totalDuration += durationMinutes;
     }   
        const finalDuration = formatDuration(totalDuration);
+      
        setDuration(finalDuration)
+
+     
 
 
     },[])
+
+    useEffect(()=>{
+        let splitDuration
+        let finalHours
+        let finalMinutes
+        let desiredHours
+        let desiredMinutes
+        if(duration){
+            splitDuration=duration.split(":")
+            finalHours=splitDuration[0]
+            finalMinutes=splitDuration[1]
+        }
+        let date=new Date(searchItemDetails.date)  
+        if(startTime){
+            desiredHours = parseInt(finalHours) + parseInt(startTime.split(":")[0]);
+            desiredMinutes = parseInt(finalMinutes) + parseInt(startTime.split(":")[1]);
+
+        }    
+        var desiredSeconds = 0;
+        var desiredMilliseconds = 0;
+        date.setHours(desiredHours, desiredMinutes, desiredSeconds, desiredMilliseconds);
+        setEndDate(date)
+        console.log(endDate)
+    },[duration])
 
   return (
     <div className='border border-gray-300 mb-4'>
@@ -120,9 +149,12 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         </div>
         <div>
             <div className='flex items-center justify-between p-2 mb-2'>
-                <p className='capitalize text-lg'><span className='font-semibold'>{startTime} | </span>{StationCodeToStationName[searchItem.from]} | {searchItem.date.toDateString()}</p>
+                <p className='capitalize text-lg'><span className='font-semibold'>{startTime} | </span>{StationCodeToStationName[searchItemDetails.from]} | {searchItemDetails.date.toDateString()}</p>
                 <p className='text-base'>_____ {duration} _____</p>
-                <p className='capitalize text-lg'><span className='font-semibold'>{endTime} | </span>{StationCodeToStationName[searchItem.to]} | {searchItem.date.toDateString()}</p>
+                {
+                    endDate &&
+                    <p className='capitalize text-lg'><span className='font-semibold'>{endTime} | </span>{StationCodeToStationName[searchItemDetails.to]} | {endDate.toDateString()}</p>
+                }
             </div>
             <div className='flex items-center gap-x-2 p-2 mb-2 overflow-x-auto seating-overflow'>
 
