@@ -19,6 +19,7 @@ const app=express()
 //routes path
 const train=require('./routes/trains')
 const booking=require("./routes/booking")
+const user=require('./routes/user')
 
 //applying middlewares cors and bodyparser
 app.use(cors())
@@ -27,7 +28,7 @@ app.use(bodyParser.json())
 
 app.use('/train',train)
 app.use('/booking',booking)
-
+app.use('/user',user)
 
 
 
