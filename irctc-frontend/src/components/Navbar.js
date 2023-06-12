@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useContext } from 'react';
+import { UserDetailsContext } from '../context/userContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
  const monthString=["Jan",'Feb','Mar',"Apr",'May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -10,6 +13,9 @@ const Navbar = () => {
  const trainDropdown=["Book Ticket","Foreign Tourist Booking","Connecting Journey Booking",'IRCTC Trains','Cancel Ticket','PNR enquiry','Track Your Train','Train Schedule','FTR Coach/Train Booking'];
  const [currentTime,setCurrentTime]=useState()
  const [currentDate,setCurrentDate]=useState()
+    const {showLogin,setShowLogin}=useContext(UserDetailsContext)
+    const navigate=useNavigate()
+
   useEffect(() => {
     const interval = setInterval(() => {
         var today = new Date()
@@ -21,18 +27,46 @@ const Navbar = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+
+  const handleLogin=()=>{
+    setShowLogin(true)
+  }
+
+  const handleRegister=()=>{
+    navigate("/register")
+    console.log("register")
+  }
+
   return (
     <div className='p-4 fixed top-0 flex items-center justify-between shadow bg-rgba-white-50 backdrop-filter backdrop-blur-md right-0 left-0 z-10'>
         <img src='https://www.irctc.co.in/nget/assets/images/secondry-logo.png' alt='Not Found'/>
         <div className='flex flex-1 px-20 items-center justify-center flex-col gap-y-4 nav-menu'>
             <div className='flex gap-x-2 -pl-24 -ml-60 '>
                 {
-                    topLabel?.map((label)=>(
-                        
-                        <p className={`uppercase text-sm px-2 py-1 cursor-pointer ${label=='login' ? "bg-[#213d77] text-white":`${label=='alerts' ? 'bg-gray-200':' '}`} `}>
-                            {label}
-                        </p>
-                    ))
+                    topLabel?.map((label)=>{
+                        if(label=='login'){
+                            return(
+                                <p className={`uppercase text-sm px-2 py-1 cursor-pointer bg-[#213d77] text-white`} onClick={()=>handleLogin()}>
+                                    {label}
+                                </p>
+                            )
+                        }
+                        else if(label=='register'){
+                            return (
+                                <p className={`uppercase text-sm px-2 py-1 cursor-pointer`} onClick={()=>handleRegister()}>
+                                    {label}
+                                </p>
+                            )
+                        }
+                        else{
+                            return(
+                                <p className={`uppercase text-sm px-2 py-1 cursor-pointer ${label=='login' ? "bg-[#213d77] text-white":`${label=='alerts' ? 'bg-gray-200':' '}`} `}>
+                                    {label}
+                                </p>
+                            )
+                        }
+                    })
                 }
                 <p className='px-4 py-1 text-sm font-semibold'>{currentDate} [{currentTime}]</p>
             </div>

@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar'
-import NearMeIcon from '@mui/icons-material/NearMe';
-import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DatePicker from 'react-datepicker';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -16,12 +14,15 @@ import TrainCard from '../components/TrainCard';
 import api from '../axios';
 import TrainSchedule from '../components/TrainSchedule';
 import SearchSelect from '../components/Dummy';
+import { useContext } from 'react';
+import { UserDetailsContext } from '../context/userContext';
+import LoginPopup from '../components/LoginPopUp';
 
 import { StationCodeToStationName } from '../constants';
 
 const BookingPage = () => {
   const location=useLocation()
-
+const {showLogin,setShowLogin}=useContext(UserDetailsContext)
   const [searchTrains,setSearchTrains]=useState([])
   const [searchItem,setSearchItem]=useState()
   const [arrow,setArrow]=useState(false)
@@ -114,13 +115,17 @@ const handlePreviousNext=(move)=>{
             showSchedule &&
             <TrainSchedule showSchedule={showSchedule} setShowSchedule={setShowSchedule} scheduleDetails={scheduleDetails}/>
         }    
+        <Navbar/>
+        {
+            showLogin && <LoginPopup/>
+        }
         <div className='mt-28 p-2 border-gray-300'>
             {
                 searchItem &&
                 <div className='bg-[#213d77] w-full px-48 py-4'>
                     <div className='flex item-center gap-x-4 mb-4 flex-wrap gap-y-2'>
                             <SearchSelect fieldText="From" searchItem={searchItem} setSearchItem={setSearchItem} showText={false}/>
-                            <div>
+                            <div className='flex items-center justify-center'>
                                 <img src='https://www.hippovideo.io/svg/arrow-down-left.svg' alt='not found' className={`p-2 bg-gray-200 rounded-full cursor-pointer duration-300 ${arrow ? '-rotate-90':'rotate-90'}`} onClick={handleFromTo}/>
                             </div>
                             <SearchSelect fieldText="To" searchItem={searchItem} setSearchItem={setSearchItem} showText={false}/>

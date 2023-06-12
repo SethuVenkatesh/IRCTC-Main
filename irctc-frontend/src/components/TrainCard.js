@@ -17,7 +17,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
       
     useEffect(()=>{
         let times=[]
-        if(details.sourceCode==searchItemDetails.from && searchItemDetails.destinationCode==searchItemDetails.to){
+        if(details.sourceCode==searchItemDetails.from && details.destinationCode==searchItemDetails.to){
             times.push(details.startTime)
             for(let station=0;station<details.intermediateStation.length;station++){
                 times.push(details.intermediateStation[station].stationTime)
@@ -95,11 +95,8 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
        const finalDuration = formatDuration(totalDuration);
       
        setDuration(finalDuration)
-
-     
-
-
     },[])
+
 
     useEffect(()=>{
         let splitDuration
@@ -122,7 +119,6 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         var desiredMilliseconds = 0;
         date.setHours(desiredHours, desiredMinutes, desiredSeconds, desiredMilliseconds);
         setEndDate(date)
-        console.log(endDate)
     },[duration])
 
   return (

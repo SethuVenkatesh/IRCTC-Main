@@ -6,7 +6,7 @@
     background-image: url('https://www.irctc.co.in/nget/checkBox.8cf423073e71167979b5.jpg');
     background-repeat: no-repeat;
     padding-right: 15px;
-    padding-bottom: 1px;
+    padding-bottom: 0px;
     margin-right: 10px;
 }
 input[type='checkbox']:checked + label{
