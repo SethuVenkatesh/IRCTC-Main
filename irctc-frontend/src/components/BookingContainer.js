@@ -97,7 +97,7 @@ const BookingContainer = () => {
                     </div>
                     <div className=''>
                         <div className='flex gap-x-2  mt-8 justify-between items-center'>
-                            <SearchSelect fieldText="From" searchItem={searchItem} setSearchItem={setSearchItem}/>
+                            <SearchSelect fieldText="From" searchItem={searchItem} setSearchItem={setSearchItem} showText={true}/>
                             <div>
                                 <img src='https://www.hippovideo.io/svg/arrow-down-left.svg' alt='not found' className={`p-2 bg-gray-200 rounded-full cursor-pointer duration-300 ${arrow ? '-rotate-90':'rotate-90'}`} onClick={handleFromTo}/>
                             </div>
@@ -106,7 +106,7 @@ const BookingContainer = () => {
                                 <input type="text"  class="block p-2 w-full text-[#213d77] text-base bg-transparent rounded-lg border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " onChange={(e)=>setSearchItem({...searchItem,to:e.target.value})} value={searchItem.to}/>
                                 <label class="absolute text-sm text-gray-500 duration-300 -top-4 left-8 transform -translate-y-1/2 z-10 origin-[0] peer-focus:text-blue-600 peer-focus:-top-4 peer-focus:scale-100 peer-placeholder-shown:top-1/2 left-8 transform -translate-y-1/2 pointer-events-none	">To</label>
                             </div> */}
-                            <SearchSelect fieldText="To" searchItem={searchItem} setSearchItem={setSearchItem} />
+                            <SearchSelect fieldText="To" searchItem={searchItem} setSearchItem={setSearchItem} showText={true} />
                         </div>
                         <div className='flex gap-x-2  mt-8 justify-between '>
                             <div className='relative border-2 border-sky-600 rounded-md flex items-center flex-1 justify-start' >

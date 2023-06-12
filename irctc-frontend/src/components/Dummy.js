@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import Select from 'react-select';
 import NearMeIcon from '@mui/icons-material/NearMe';
 
-const SearchSelect = ({fieldText,searchItem,setSearchItem}) => {
+const SearchSelect = ({fieldText,searchItem,setSearchItem,showText}) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = [
@@ -36,8 +36,11 @@ const SearchSelect = ({fieldText,searchItem,setSearchItem}) => {
 
 
   return (
-    <div className='px-4 py-2 w-2/5	'>
-      <h1 className='text-sm text-blue-600 '>{fieldText}</h1>
+    <div className='px-4 py-2 w-2/5	min-w-max'>
+      {
+        showText &&
+        <h1 className='text-sm text-blue-600 '>{fieldText}</h1>
+      }
       <Select
         options={options}
         value={selectedOption}

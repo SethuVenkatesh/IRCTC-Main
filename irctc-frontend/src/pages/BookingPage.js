@@ -15,6 +15,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import TrainCard from '../components/TrainCard';
 import api from '../axios';
 import TrainSchedule from '../components/TrainSchedule';
+import SearchSelect from '../components/Dummy';
 
 import { StationCodeToStationName } from '../constants';
 
@@ -117,17 +118,13 @@ const handlePreviousNext=(move)=>{
             {
                 searchItem &&
                 <div className='bg-[#213d77] w-full px-48 py-4'>
-                    <div className='flex item-center justify-center gap-x-4 mb-4 flex-wrap gap-y-2'>
-                            <div className='relative border-2 border-sky-600 rounded-md flex items-center bg-white flex-1'>
-                                <NearMeIcon className='color-[#213d77] pl-2'/>
-                                <input type="text"  class="block p-2  text-[#213d77] text-base bg-transparent rounded-lg border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer w-32" placeholder=" "  onChange={(e)=>setSearchItem({...searchItem,from:e.target.value})} value={searchItem.from}/>
+                    <div className='flex item-center gap-x-4 mb-4 flex-wrap gap-y-2'>
+                            <SearchSelect fieldText="From" searchItem={searchItem} setSearchItem={setSearchItem} showText={false}/>
+                            <div>
+                                <img src='https://www.hippovideo.io/svg/arrow-down-left.svg' alt='not found' className={`p-2 bg-gray-200 rounded-full cursor-pointer duration-300 ${arrow ? '-rotate-90':'rotate-90'}`} onClick={handleFromTo}/>
                             </div>
-                            <img src='https://www.hippovideo.io/svg/arrow-down-left.svg' alt='not found' className={`p-2 bg-gray-200 rounded-full cursor-pointer duration-300 ${arrow ? '-rotate-90':'rotate-90'}`} onClick={handleFromTo}/>
-                            <div className='relative border-2 border-sky-600 rounded-md flex items-center bg-white flex-1'>
-                                <PlaceIcon className='color-[#213d77] pl-2'/>
-                                <input type="text"  class="block p-2  text-[#213d77] text-base bg-transparent rounded-lg border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-blue-600 peer w-32" placeholder=" " onChange={(e)=>setSearchItem({...searchItem,to:e.target.value})} value={searchItem.to}/>
-                            </div>
-                            <div className='relative border-2 border-sky-600 rounded-md flex items-center flex-1 justify-start' >
+                            <SearchSelect fieldText="To" searchItem={searchItem} setSearchItem={setSearchItem} showText={false}/>
+                            <div className='relative border-2 border-sky-600 rounded-md flex items-center flex-1 justify-start h-fit' >
                                 <DatePicker
                                     id="date"
                                     selected={searchItem.date}
@@ -137,7 +134,7 @@ const handlePreviousNext=(move)=>{
                                     calendarIcon={<CalendarMonthIcon />}
                                 />
                             </div>
-                            <div className='relative border-2 border-sky-600 rounded-md flex items-center justify-between gap-x-2 flex-1 bg-white' onClick={()=>setquotaDropDown(!quotadropDown)}>
+                            <div className='relative border-2 border-sky-600 rounded-md flex items-center justify-between gap-x-2 flex-1 bg-white p-2' onClick={()=>setquotaDropDown(!quotadropDown)}>
                                 <WidgetsIcon className='color-[#213d77] pl-2'/>
                                 <p className='w-32 text-ellipsis whitespace-nowrap	overflow-hidden text-[#213d77] text-base'>{quotaOption}</p>
                                 <KeyboardArrowDownIcon/>
@@ -154,7 +151,7 @@ const handlePreviousNext=(move)=>{
                                     )
                                 }
                             </div>
-                            <div className='relative border-2 border-sky-600 rounded-md flex items-center justify-between gap-x-2 flex-1 bg-white' onClick={()=>setclassDropDown(!classdropDown)}>
+                            <div className='relative border-2 border-sky-600 rounded-md flex items-center justify-between gap-x-2 flex-1 bg-white p-2' onClick={()=>setclassDropDown(!classdropDown)}>
                                 <BusinessCenterIcon className='color-[#213d77] pl-2'/>
                                 <p className='w-32 text-ellipsis whitespace-nowrap	overflow-hidden text-[#213d77] text-base'>{classOption}</p>
                                 <KeyboardArrowDownIcon/>
