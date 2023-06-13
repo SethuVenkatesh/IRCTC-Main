@@ -6,35 +6,22 @@ const User = require('../models/user');
 const {auth} = require('../middleware/authMiddleware')
 
 router.post("/register", async function(req,res){
-    const {name, email, password} = req.body;
-    if(!name || !email || !password){
-        return res.status(400).json({err : "Please Fill All the Fields"});
-    }
-
+    const registerDetails=req.body.userDetails;
+    console.log(req.body)
+    const {email,password}=registerDetails
     const userExists = await User.findOne({email});
     if(userExists)
     {
         return res.status(400).json({err : "User Already Exists"});
     }
-
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
+    registerDetails["password"]=encryptedPassword
+    
+    const user = await User.create(registerDetails)
+    return res.status(201).send("user created successfully")
 
-    const user = await User.create({
-        name, email, password : encryptedPassword
-    })
-    if(user)
-    {
-        return res.status(201).json({
-            id : user._id,
-            name : user.name,
-            email : user.email,
-            status : "User Created Successfully"
-        });
-    }
-    else{
-        return res.status(400).json({msg : "Invalid User Data"});
-    }
+
 })
 
 router.post("/login", async function(req,res) {

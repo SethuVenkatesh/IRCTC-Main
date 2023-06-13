@@ -38,7 +38,7 @@ function LoginPopup() {
                 type="text"
                 id="password"
                 className="w-full border border-gray-300 py-2 px-3 text-gray-700 placeholder-[#2f4676] "
-                placeholder="Enter Captcha" onChange={handleChange}
+                placeholder="Enter Captcha"
               />
             </div>
             <div className='mb-2'>

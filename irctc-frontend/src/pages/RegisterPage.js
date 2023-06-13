@@ -11,6 +11,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import PinterestIcon from '@mui/icons-material/Pinterest';
 import LoginPopup from '../components/LoginPopUp';
+import RegisterContainer from '../components/RegisterContainer';
+
 import { useContext } from 'react'
 import { UserDetailsContext } from '../context/userContext'
 
@@ -25,10 +27,8 @@ export const RegisterPage = () => {
             showLogin && <LoginPopup/>
         }
         <p className='mt-28'></p>
-        <div className='bg-white'>
-            Register Container
-        </div>      
-        <div className='mt-4 bg-gradient-to-l from-[#9b4b90] to-[#2c215d] p-4 items-center justify-around capitalize flex  '>
+        <RegisterContainer/>     
+        <div className='mb-2 bg-gradient-to-l from-[#9b4b90] to-[#2c215d] p-4 items-center justify-around capitalize flex  '>
             <span className='text-white'>Get Connected with us on social networks</span>
             <div className='flex gap-x-2 float-right'>
                 <div className='p-2 bg-[#1877F2] rounded-full text-white'>

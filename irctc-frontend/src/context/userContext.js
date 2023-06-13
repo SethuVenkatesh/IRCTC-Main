@@ -5,8 +5,8 @@ export const UserDetailsContext = createContext();
 
 export function UserDetailsProvider({ children }) {
   const [userDetails, setUserDetails] = useState({
-    name: 'Sethu',
-    email: 'sethu@gmail.com',
+    name: '',
+    email: '',
     // other user details
   });
 
