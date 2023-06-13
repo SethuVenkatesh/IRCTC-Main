@@ -29,7 +29,7 @@ function LoginPopup() {
                 placeholder="Password"
               />
             </div>
-            <p className='mb-4 uppercase text-xs text-[#1457a7] font-semibold cursor-pointer' onClick={()=>handleForgotAccount() }>Forget Account Details?</p>
+            <p className='mb-4 uppercase text-xs text-[#1457a7] font-semibold cursor-pointer'>Forget Account Details?</p>
             <div className="mb-2">
               <p className='bg-[#213d77] text-white py-2 px-3'>
                 <Captcha/>
