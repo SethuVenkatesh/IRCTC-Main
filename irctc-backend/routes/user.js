@@ -5,6 +5,38 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {auth} = require('../middleware/authMiddleware')
 
+
+router.post("/username_availablity",async function(req,res){
+    const userName=req.body.userName;
+    const userExists = await User.findOne({userName});
+    if(userExists){
+       return res.status(200).send("username is not available")
+    }else{
+       return res.status(200).send("")
+    }
+})
+
+router.post("/phonenumber_availablity",async function(req,res){
+    const phoneNumber=req.body.phoneNumber;
+    const userExists = await User.findOne({phoneNumber});
+    if(userExists){
+       return res.status(200).send("phone number is already regsitered")
+    }else{
+       return res.status(200).send("")
+    }
+})
+
+router.post("/email_availablity",async function(req,res){
+    const email=req.body.email;
+    const userExists = await User.findOne({email});
+    if(userExists){
+       return res.status(200).send("email is already regsitered")
+    }else{
+       return res.status(200).send("")
+    }
+})
+
+
 router.post("/register", async function(req,res){
     const registerDetails=req.body.userDetails;
     console.log(req.body)
