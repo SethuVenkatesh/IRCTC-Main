@@ -4,11 +4,7 @@ import React, { createContext, useState } from 'react';
 export const UserDetailsContext = createContext();
 
 export function UserDetailsProvider({ children }) {
-  const [userDetails, setUserDetails] = useState({
-    name: '',
-    email: '',
-    // other user details
-  });
+  const [userDetails, setUserDetails] = useState(undefined);
 
   const [showLogin,setShowLogin]=useState(false)
 

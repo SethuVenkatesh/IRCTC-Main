@@ -57,14 +57,12 @@ router.post("/register", async function(req,res){
 })
 
 router.post("/login", async function(req,res) {
-    const {email, password} = req.body;
-    const user = await User.findOne({email});
+    const {userName, password} = req.body.loginData;
+    const user = await User.findOne({userName});
 
     if(user && (await bcrypt.compare(password, user.password))){
         return res.status(201).json({
-            id : user._id,
-            name : user.name,
-            email : user.email,
+            user,
             token : generateToken(user._id),
             status : "Login Successfully"
         });

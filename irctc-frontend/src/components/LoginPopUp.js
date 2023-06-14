@@ -1,14 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useContext } from 'react';
 import { UserDetailsContext } from '../context/userContext';
-import Captcha from './Captcha';
+import {generateCaptcha} from '../components/Captcha'
+import RefreshIcon from '@mui/icons-material/Refresh';
+import Toaster from './common/Toastifier';
+import api from '../axios';
+import Loader from './common/Loader';
 
 function LoginPopup() {
     const {showLogin,setShowLogin}=useContext(UserDetailsContext)
+    const {userDetails, setUserDetails}=useContext(UserDetailsContext)
+    const [loading,setLoading]=useState(false)
+    const [captcha,setCaptcha]=useState('')
+    const [loginData,setLoginData]=useState({
+      userName:"",
+      password:"",
+      captcha:""
+    })
+    const [toastMsg,setToastMsg]=useState("")
+    const handleLogin=async ()=>{
+      if(captcha!=loginData.captcha){
+        let text=generateCaptcha(6)
+        setCaptcha(text)
+        setToastMsg("Captcha is invalid")
+
+      }else{
+        setLoading(true)
+        await api.post('/user/login',{loginData}).then(res=>{
+          setUserDetails(res.data)
+        })
+        setLoading(false)
+        setShowLogin(false)
+
+      }
+    }
+
+    const handleChange=(e)=>{
+      setLoginData({...loginData,[e.target.name]:e.target.value})
+    }
+
+    useEffect(()=>{
+      let text=generateCaptcha(6)
+      setCaptcha(text)
+    },[])
+
+
   return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-10">
+        {
+          loading && <Loader/>
+        }
         <div className="relative bg-white p-8 max-w-sm w-full">
+        {
+            toastMsg.length>=1&&
+            <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg}/>
+        }
           <p className="text-xl uppercase font-semibold tracking-wide pb-2 text-center w-max m-auto text-[#2f4676] tracking-wider border-b-2	border-[#2f4676]">Login</p>
           <span className='absolute right-0 top-0 p-4 cursor-pointer' onClick={()=>setShowLogin(false)}>
               <CloseIcon className='text-[#2f4676]'/>
@@ -16,29 +63,40 @@ function LoginPopup() {
             <div className="mb-4 mt-2">
               <input
                 type="text"
-                id="email"
                 className="w-full border border-gray-300 py-2 px-3 text-gray-700 placeholder-[#2f4676] "
-                placeholder="Username"
+                placeholder="UserName"
+                value={loginData.userName}
+                name='userName'
+                onChange={(e)=>handleChange(e)}
               />
             </div>
             <div className="mb-2">
               <input
                 type="password"
-                id="password"
                 className="w-full border border-gray-300 py-2 px-3 text-gray-700 placeholder-[#2f4676] "
                 placeholder="Password"
+                value={loginData.password}
+                name='password'
+                onChange={(e)=>handleChange(e)}
               />
             </div>
             <p className='mb-4 uppercase text-xs text-[#1457a7] font-semibold cursor-pointer'>Forget Account Details?</p>
             <div className="mb-2">
-              <p className='bg-[#213d77] text-white py-2 px-3'>
-                <Captcha/>
+              <p className='bg-[#213d77] text-white py-2 px-3 flex items-center justify-between'>
+                <p className='select-none '>{captcha}</p>
+                <RefreshIcon className='cursor-pointer' onClick={()=>{
+                  let text=generateCaptcha(6)
+                  setCaptcha(text)
+                }}/>
               </p>
               <input
                 type="text"
-                id="password"
                 className="w-full border border-gray-300 py-2 px-3 text-gray-700 placeholder-[#2f4676] "
                 placeholder="Enter Captcha"
+                value={loginData.captcha}
+                name='captcha'
+                onChange={(e)=>handleChange(e)}
+
               />
             </div>
             <div className='mb-2'>
@@ -48,6 +106,7 @@ function LoginPopup() {
             </div>
             <div
               className="cursor-pointer w-full rounded-lg px-2 py-2 bg-[#fb792b] text-white text-base uppercase font-bold text-center mb-2"
+              onClick={()=>handleLogin()}
             >
               Sign In
             </div>

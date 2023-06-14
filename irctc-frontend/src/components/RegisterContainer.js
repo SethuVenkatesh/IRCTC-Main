@@ -265,7 +265,7 @@ const RegisterContainer = () => {
         let tabIndex=allTabs.indexOf(selectedTab)
 
         if(tabIndex==2){
-            if(validateRegisterForm()){
+            if(await validateRegisterForm()){
                 const userDetails={...registerDetails}
                 delete userDetails["confirmPassword"]
                 api.post('user/register',{userDetails}).then(res=>{
@@ -276,7 +276,7 @@ const RegisterContainer = () => {
 
         tabIndex++;
         setPrevBtnText("back")
-        if(tabIndex==2){
+        if(tabIndex<=2){
             setNextBtnText("register")
         }else{
             setNextBtnText("continue")
