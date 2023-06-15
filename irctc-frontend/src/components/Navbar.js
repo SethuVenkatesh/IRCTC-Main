@@ -50,7 +50,6 @@ const Navbar = () => {
         <div className='flex flex-1 px-20 items-center justify-center flex-col gap-y-4 nav-menu'>
            
             <div className='flex gap-x-2 -pl-24 -ml-60 '>
-
                 {
                     userDetails!=undefined ? 
                     <>
@@ -141,7 +140,7 @@ const Navbar = () => {
                                 <p className="relative  uppercase text-sm px-2 py-1 font-medium cursor-pointer before:content-[''] before:w-full before:bg-amber-500 before:h-1 before:absolute before:left-0 before:bottom-0 text-amber-500">
                                     {label}
                                 </p>
-                                <div className='absolute top-full shadow-lg rounded-lg hidden group-hover/main:block w-max z-10 bg-gray-50'>
+                                <div className='absolute top-full shadow-lg rounded-lg hidden group-hover/main:block w-max z-10 bg-gray-50 z-10'>
                                     {
                                         trainDropdown.map((trainList)=>{
                                             if(trainList=='IRCTC Trains')

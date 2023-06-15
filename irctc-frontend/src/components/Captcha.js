@@ -1,10 +1,6 @@
 
 const characters = "abcdefghijklmnopqrstuvwxyz1234567890@#$=&ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-export const regenerateCaptcha =() =>{
-    generateCaptcha(6);
-}
-
 export const generateCaptcha = (length) => {
       let result = '';
       const characterLength = characters.length;

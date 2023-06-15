@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const Toaster = ({ToastMessage,setToastMsg}) => {
+const Toaster = ({ToastMessage,setToastMsg,success}) => {
     const [showToast,setShowToast]=useState(true)
 
 
@@ -20,14 +20,14 @@ const Toaster = ({ToastMessage,setToastMsg}) => {
     <>
         {
             showToast &&
-            <div className='bg-red-900 text-white w-1/4 mb-2 m-auto rounded-t-lg fixed right-[20px] bottom-[10px]'>
+            <div className={`${success ? "bg-green-500":"bg-red-900"} text-white w-1/4 mb-2 m-auto rounded-t-lg fixed right-[20px] bottom-[10px]`}>
                 <p className='text-baseline font-semibold px-4 py-3 capitalize'>{ToastMessage}</p>
                 <CloseIcon className='absolute top-0 right-0 ' onClick={()=>{
                   setShowToast(false)
                   setToastMsg("")
                 }
                 }/>
-                <p className='h-[4px] bg-red-500 toast-animation'></p>
+                <p className={`h-[4px] ${success ? "bg-green-800":"bg-red-500"} toast-animation`}></p>
             </div>
         }
     </>

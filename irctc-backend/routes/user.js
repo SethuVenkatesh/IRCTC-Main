@@ -3,7 +3,8 @@ var router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {auth} = require('../middleware/authMiddleware')
+const {auth} = require('../middleware/authMiddleware');
+const { route } = require('./trains');
 
 
 router.post("/username_availablity",async function(req,res){
@@ -56,6 +57,17 @@ router.post("/register", async function(req,res){
 
 })
 
+router.post("/details",async function(req,res){
+    const {userName}=req.body.forgotDetails
+    const user=await User.findOne({userName})
+    if(user){
+        res.status(200).send(user)
+    }
+    else{
+        res.status(200).send("user name is not valid")
+    }
+})
+
 router.post("/login", async function(req,res) {
     const {userName, password} = req.body.loginData;
     const user = await User.findOne({userName});
@@ -67,9 +79,21 @@ router.post("/login", async function(req,res) {
             status : "Login Successfully"
         });
     }else{
-        return res.status(404).json({msg : "Invalid User Data"});
+        return res.status(201).send({msg : "Invalid User Data"});
     }
 
+})
+
+router.post("/update",async function(req,res){
+    const {password,userId}=req.body.forgotDetails;
+    const salt = await bcrypt.genSalt(10);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+    const updatedDonor=await User.findByIdAndUpdate(
+        userId,
+        {password:encryptedPassword},
+        {new: true},
+    );
+    return res.status(200).send("Password updated successfully")
 })
 
 

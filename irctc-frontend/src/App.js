@@ -10,6 +10,8 @@ import BookingPage from './pages/BookingPage';
 import { UserDetailsContext } from './context/userContext';
 import { useContext } from 'react';
 import { RegisterPage } from './pages/RegisterPage';
+import ForgotPassword from './pages/ForgotPassword';
+
 
 function App() {
 
@@ -21,6 +23,7 @@ function App() {
         <Routes>
           <Route index path='/home' element={<Home />}/>
           <Route index path='/register' element={<RegisterPage />}/>
+          <Route index path='/forgot_password' element={<ForgotPassword />}/>
           <Route index path='/booking/train_list' element={<BookingPage />}/>
           <Route path='/train'>
             <Route index path='all' element={<AllTrain/>}/>

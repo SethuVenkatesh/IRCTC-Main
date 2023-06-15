@@ -23,7 +23,6 @@ const Home = () => {
         }
         <ServiceContainer/>
         <HolidayContainer/>
-        <Toaster ToastMessage="Hi"/>
         <Footer/>
     </div>
   )

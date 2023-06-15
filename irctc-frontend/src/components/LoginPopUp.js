@@ -7,10 +7,14 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import Toaster from './common/Toastifier';
 import api from '../axios';
 import Loader from './common/Loader';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPopup() {
+
+  const navigate=useNavigate()
     const {showLogin,setShowLogin}=useContext(UserDetailsContext)
     const {userDetails, setUserDetails}=useContext(UserDetailsContext)
+
     const [loading,setLoading]=useState(false)
     const [captcha,setCaptcha]=useState('')
     const [loginData,setLoginData]=useState({
@@ -28,10 +32,17 @@ function LoginPopup() {
       }else{
         setLoading(true)
         await api.post('/user/login',{loginData}).then(res=>{
-          setUserDetails(res.data)
+          console.log(res.data)
+          if(res.data.user){
+            setUserDetails(res.data)
+            setShowLogin(false)
+          }
+          else{
+            setToastMsg(res.data.msg)
+            generateCaptcha(6)
+          }
         })
         setLoading(false)
-        setShowLogin(false)
 
       }
     }
@@ -46,6 +57,7 @@ function LoginPopup() {
     },[])
 
 
+    console.log(toastMsg)
   return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-10">
         {
@@ -80,7 +92,12 @@ function LoginPopup() {
                 onChange={(e)=>handleChange(e)}
               />
             </div>
-            <p className='mb-4 uppercase text-xs text-[#1457a7] font-semibold cursor-pointer'>Forget Account Details?</p>
+            <p className='mb-4 uppercase text-xs text-[#1457a7] font-semibold cursor-pointer' 
+              onClick={()=>{
+                navigate("/forgot_password")
+                setShowLogin(false)
+              }}
+            >Forget Account Details?</p>
             <div className="mb-2">
               <p className='bg-[#213d77] text-white py-2 px-3 flex items-center justify-between'>
                 <p className='select-none '>{captcha}</p>
