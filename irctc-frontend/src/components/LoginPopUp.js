@@ -13,7 +13,7 @@ function LoginPopup() {
 
   const navigate=useNavigate()
     const {showLogin,setShowLogin}=useContext(UserDetailsContext)
-    const {userDetails, setUserDetails}=useContext(UserDetailsContext)
+    const {Login, setUserDetails}=useContext(UserDetailsContext)
 
     const [loading,setLoading]=useState(false)
     const [captcha,setCaptcha]=useState('')

@@ -1,12 +1,24 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import { StationCodeToStationName } from '../constants';
+import { useContext } from 'react';
+import { UserDetailsContext } from '../context/userContext';
+import { useNavigate } from 'react-router-dom';
+import Toaster from './common/Toastifier';
+
+
 const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,searchItemDetails}) => {
+
+    const {userDetails,setShowLogin}=useContext(UserDetailsContext)
+    const navigate=useNavigate()
     const [duration,setDuration]=useState()
     const [startTime,setStartTime]=useState()
     const [endTime,setEndTime]=useState()
     const [endDate,setEndDate]=useState()
+    const [selectedClass,setSelectedClass]=useState("")
+    const [toastMsg,setToastMsg]=useState("")
+
+
     function formatDuration(durationMinutes) {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
@@ -15,6 +27,25 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         return formattedDuration;
       }
       
+
+      const handleBook=()=>{
+        console.log("handle book")
+        console.log(selectedClass)
+        let allDetails={...searchItemDetails,...details,duration,stationStartTime:startTime,stationEndTime:endTime,stationEndDate:endDate,selectedClass:selectedClass}
+        if(selectedClass==""){
+            console.log(selectedClass)
+            setToastMsg("Please select Class")
+            return;
+        }
+        if(userDetails){
+            navigate("/booking/details",{state:allDetails})
+        }
+        else{
+            setShowLogin(true)
+        }
+      }
+
+
     useEffect(()=>{
         let times=[]
         if(details.sourceCode==searchItemDetails.from && details.destinationCode==searchItemDetails.to){
@@ -123,6 +154,10 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
 
   return (
     <div className='border border-gray-300 mb-4'>
+        {
+            toastMsg.length>=1&&
+            <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg}/>
+        }
         <div className='flex items-center justify-between p-2 bg-[#f5f5f5]'>
             <p className='font-semibold text-lg '>{details.trainName} ({details.trainNumber})</p>
             <p className='text-medium font-normal'>Runs On : 
@@ -157,7 +192,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                 {
                     details.seatings.map((seat)=>{
                         return (
-                            <div className='border border-gray-200 rounded-md bg-[#f5f5f5] p-2 min-w-[180px]'>
+                            <div className={`border border-gray-200 rounded-md bg-[#f5f5f5] p-2 min-w-[180px] ${selectedClass ==seat.trainClass ? "border-gray-900" : "" }`} onClick={()=>setSelectedClass(seat.trainClass)}>
                                 <p className='font-semibold text-medium'>{seat.trainClass}</p>
                                 <p className='uppercase text-[#37a51d] font-bold'>Available - {seat.totalSeats}</p>
                             </div>
@@ -165,9 +200,19 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                     })
                 }
             </div>
-            <div className='flex gap-x-2 mb-2 p-2'>
-                <p className='px-4 py-2 bg-[#fb792b] text-white rounded-md text-sm font-semibold'>Book Now</p>
+            <div className='flex gap-x-2 mb-2 p-2 items-center'>
+                <p className='px-4 py-2 bg-[#fb792b] text-white rounded-md text-sm font-semibold cursor-pointer' onClick={handleBook}>Book Now</p>
                 <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-medium uppercase '>Other Dates</p>
+                {
+                    details.seatings.map((seat)=>{
+                        if(selectedClass==seat.trainClass){
+                            return(
+                                <p className='font-semibold'>Ticket Price - {seat.ticketPrice}</p>
+                            )
+                        }
+                    })
+
+                }
             </div>
 
         </div>
