@@ -8,8 +8,9 @@ import LoginPopup from '../components/LoginPopUp'
 
 import { useContext } from 'react'
 import { UserDetailsContext } from '../context/userContext'
-
 import Toaster from '../components/common/Toastifier'
+
+import PaymentForm from '../components/PaymentForm'
 
 const Home = () => {
   const {showLogin,setShowLogin}=useContext(UserDetailsContext)
@@ -23,6 +24,7 @@ const Home = () => {
         }
         <ServiceContainer/>
         <HolidayContainer/>
+        <PaymentForm/>
         <Footer/>
     </div>
   )

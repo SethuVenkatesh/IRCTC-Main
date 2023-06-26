@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { StationCodeToStationName } from '../constants';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';import AddIcon from '@mui/icons-material/Add';
+import PaymentForm from '../components/PaymentForm';
 
 
 const PassangerInput=({index,details,setPassengerDetails,passengerDetails})=>{
@@ -237,12 +238,60 @@ const TabTwo=({allDetails,passengerDetails,userDetails})=>{
     )
 }
 
-const TabThree=()=>{
+const TabThree=({allDetails,passengerDetails,userDetails})=>{
+    console.log("AllDetails")
+    console.log(allDetails)
+    console.log("PassangerDetails")
+    console.log(passengerDetails)
+    console.log("userDetails")
+    console.log(userDetails)
 
+    return(
+        <>
+        <div className='border-2 border-gray-300 mb-4'>
+            <div className='flex items-center justify-between px-4 py-3 bg-gray-100'>
+                <p className='font-bold text-lg'>Fare Summary</p>
+            </div>
+            <div className='px-4 py-1 flex items-center justify-between'>
+                <p>Ticket Fare</p>
+                {
+                    allDetails.seatings.map((seat)=>{
+                        if(seat.trainClass==allDetails.selectedClass){
+                            return (
+                                <p>{seat.ticketPrice}</p>
+                            )
+                        }
+                    })
+                }
+            </div>
+            <div className='px-4 py-1 flex items-center justify-between capitalize'>
+                <p>Number of passengers</p>
+                <p>{passengerDetails.length}</p>
+            </div>
+            <div className='px-4 py-3 flex items-center justify-between capitalize bg-[#213d77]'>
+                <p className='text-white font-semibold'>Total Fare</p>
+                {
+                    allDetails.seatings.map((seat)=>{
+                        if(seat.trainClass==allDetails.selectedClass){
+                            return (
+                                <p className='text-white font-semibold'>{seat.ticketPrice * passengerDetails.length}</p>
+                            )
+                        }
+                    })
+                }
+            </div>
+        </div>
+        <div className='flex items-center justify-center mb-4 '>
+            <PaymentForm allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/>
+        </div>
+        </>
+
+    )
 }
 
 
 const BookingDetails = () => { 
+
     const {showLogin,setShowLogin,userDetails}=useContext(UserDetailsContext)
     const [allDetails,setAllDetails]=useState()
     const [passengerDetails,setPassengerDetails]=useState([{name:"",age:"",gender:""}])
@@ -264,11 +313,22 @@ const BookingDetails = () => {
 
     console.log(passengerDetails)
     const handleBack=()=>{
-        setSelectedTab(selectedTab-1)
+        let tab=selectedTab-1
+        if(tab==0){
+
+        }else{
+            setSelectedTab(tab)
+        }
     }
 
     const handleContinue=()=>{
-        setSelectedTab(selectedTab+1)
+        let tab=selectedTab+1
+        if(tab==4){
+            selectedTab(3)
+        }
+        else{
+            setSelectedTab(tab)
+        }
     }
     console.log(selectedTab)
     return (
@@ -319,12 +379,15 @@ const BookingDetails = () => {
                 </div>
                 <>
                     { 
-                        selectedTab===1 && allDetails ? <TabOne allDetails={allDetails} passengerDetails={passengerDetails} setPassengerDetails={setPassengerDetails} handleAddPassanger={handleAddPassanger} userDetails={userDetails}/> : selectedTab==2 ? <TabTwo allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/> : <TabThree/>
+                        selectedTab===1 && allDetails ? <TabOne allDetails={allDetails} passengerDetails={passengerDetails} setPassengerDetails={setPassengerDetails} handleAddPassanger={handleAddPassanger} userDetails={userDetails}/> : selectedTab==2 ? <TabTwo allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/> : <TabThree allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/>
                     }
                 </>
                 <div className='flex items-center gap-x-4'>
                     <p className='px-4 py-2 bg-[#f5f5f5] text-gray-900 font-bold border-2 border-gray-400 cursor-pointer' onClick={handleBack}>Back</p>
-                    <p className='bg-[#fb792b] text-white border-2 border-[#fb792b] px-4 py-2 font-bold rounded-md cursor-pointer' onClick={handleContinue}>Continue</p>
+                    {
+                        selectedTab!==3 &&
+                        <p className='bg-[#fb792b] text-white border-2 border-[#fb792b] px-4 py-2 font-bold rounded-md cursor-pointer' onClick={handleContinue}>Continue</p>
+                    }
                 </div>
                 
           </div>

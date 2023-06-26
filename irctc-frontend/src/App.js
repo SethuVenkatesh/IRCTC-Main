@@ -13,6 +13,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 import BookingDetails from './pages/BookingDetails';
 
+
 function App() {
 
   const {userDetails}=useContext(UserDetailsContext)

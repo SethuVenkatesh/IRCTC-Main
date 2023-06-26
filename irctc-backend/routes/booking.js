@@ -1,6 +1,9 @@
 const express=require('express')
 var router = express.Router();
 const Train=require('../models/train')
+const Booking=require("../models/booking")
+
+const stripe = require('stripe')('sk_test_51MKE7DSGL2cGXx2DUKmYWJMyiIcs4rEhumXqEeLhhHYJw6y1CIH0qRwVLd8doUNvkbpB1pZj9dTMeZVJXMOI7E2s00rGUUEzdL');
 
 
 const days=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
@@ -56,10 +59,28 @@ router.post("/train_list",async function(req,res){
         
     }
 
-    console.log(allAvailableTrains)
+    for(let train=0;train<allAvailableTrains.length;train++){
+        console.log(allAvailableTrains[train])
+    }
 
     res.status(200).send(allAvailableTrains)
 })
+
+router.post('/complete', async (req, res) => {
+    const paymentDetails=req.body.paymentDetails
+
+    console.log(paymentDetails)
+    Booking.create(paymentDetails).then((res)=>console.log("Payment Successfull"))
+    res.status(200).send("Payment Successfull")
+});
+
+router.get("/all",async (req,res)=>{
+    let bookings=await Booking.find().populate('user').exec();
+    console.log(bookings)
+    res.status(200).send(bookings)
+})
+
+
 
 
 module.exports = router;

@@ -32,6 +32,7 @@ app.use('/user',user)
 
 
 
+
 //end points
 app.listen(PORT,(req,res)=>{
     console.log(`Listening on port ${PORT}`)
