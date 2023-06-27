@@ -24,7 +24,6 @@ const Home = () => {
         }
         <ServiceContainer/>
         <HolidayContainer/>
-        <PaymentForm/>
         <Footer/>
     </div>
   )

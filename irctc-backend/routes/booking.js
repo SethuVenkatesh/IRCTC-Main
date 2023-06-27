@@ -9,7 +9,8 @@ const stripe = require('stripe')('sk_test_51MKE7DSGL2cGXx2DUKmYWJMyiIcs4rEhumXqE
 const days=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
 router.post("/train_list",async function(req,res){
     const searchItem=req.body.searchParams;
-    console.log(searchItem)
+    let today=new Date(searchItem.date)
+    var date = (today.getDate())+ '/' + (today.getMonth()+1) + '/' + today.getFullYear();
     let dayIndex=new Date(searchItem.date).getDay()
     const allTrains=await Train.find()
     let allAvailableTrains=[];
@@ -58,18 +59,66 @@ router.post("/train_list",async function(req,res){
         }
         
     }
-
+    let currentAvailableTrain=[]
     for(let train=0;train<allAvailableTrains.length;train++){
-        console.log(allAvailableTrains[train])
+        let trainDetails= allAvailableTrains[train]
+        const dateBookings=await Booking.find({bookingDate:date,trainNumber:trainDetails.trainNumber})
+        let filteredSeatings=[]
+        for(let seat=0;seat<trainDetails.seatings.length;seat++){
+            let availableSeats=parseInt(trainDetails.seatings[seat].totalSeats)
+           
+            let seatClass=trainDetails.seatings[seat].trainClass
+
+            for(let booking=0;booking<dateBookings.length;booking++){
+                if(dateBookings[booking].class==seatClass){
+                    availableSeats=availableSeats-dateBookings[booking].passengerDetails.length
+                }
+            }
+            let seatDetails={
+                ...trainDetails.seatings[seat],
+                availableSeats
+            }
+            filteredSeatings.push(seatDetails)
+        }
+        trainDetails.seatings=filteredSeatings
+        currentAvailableTrain.push(trainDetails)
+
+    }
+    console.log(currentAvailableTrain)
+    res.status(200).send(currentAvailableTrain)
+})
+
+
+router.post("/check_availablity",async (req,res)=>{
+    const {trainNumber,trainClass,passengerCount,bookingDate}= req.body
+    const trainDetails=await Train.findOne({trainNumber:trainNumber})
+    const dateBookings=await Booking.find({bookingDate:bookingDate,trainNumber:trainNumber,class:trainClass})
+    console.log(dateBookings)
+    let availableSeats
+    for(let seat=0;seat<trainDetails.seatings.length;seat++){
+        let seatClass=trainDetails.seatings[seat].trainClass
+        if(trainClass==seatClass){
+            availableSeats=parseInt(trainDetails.seatings[seat].totalSeats)
+        }
+    }
+    for(let bookingIndex=0;bookingIndex<dateBookings.length;bookingIndex++){
+        console.log(dateBookings[bookingIndex])
+        availableSeats=availableSeats-dateBookings[bookingIndex].passengerDetails.length
+    }
+    console.log(availableSeats)
+    availableSeats=availableSeats-passengerCount
+    console.log(availableSeats)
+    if(availableSeats>=0){
+        res.status(200).send({availablity:true})
+    }
+    else{
+        res.status(200).send({availablity:false})
     }
 
-    res.status(200).send(allAvailableTrains)
 })
 
 router.post('/complete', async (req, res) => {
     const paymentDetails=req.body.paymentDetails
-
-    console.log(paymentDetails)
     Booking.create(paymentDetails).then((res)=>console.log("Payment Successfull"))
     res.status(200).send("Payment Successfull")
 });

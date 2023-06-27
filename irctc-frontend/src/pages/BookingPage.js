@@ -17,11 +17,14 @@ import SearchSelect from '../components/Dummy';
 import { useContext } from 'react';
 import { UserDetailsContext } from '../context/userContext';
 import LoginPopup from '../components/LoginPopUp';
+import Loader from '../components/common/Loader';
 
 import { StationCodeToStationName } from '../constants';
 
 const BookingPage = () => {
   const location=useLocation()
+
+  const [loading,setLoading]=useState(true)
 const {showLogin,setShowLogin}=useContext(UserDetailsContext)
   const [searchTrains,setSearchTrains]=useState([])
   const [searchItem,setSearchItem]=useState()
@@ -71,11 +74,12 @@ const {showLogin,setShowLogin}=useContext(UserDetailsContext)
 
   const handleSearch=()=>{
     var searchParams=searchItem
+    setLoading(true)
     setSearchItemDetails({...searchItem})
     setSearchTrains([])
     api.post("/booking/train_list",{searchParams}).then((res)=>{
         setSearchTrains(res.data)
-
+        setLoading(false)
     }).catch(err=>{
         console.log(err)
     })
@@ -88,7 +92,7 @@ const {showLogin,setShowLogin}=useContext(UserDetailsContext)
     setSearchItemDetails(searchParams)
     api.post("/booking/train_list",{searchParams}).then((res)=>{
         setSearchTrains(res.data)
-
+        setLoading(false)
     }).catch(err=>{
         console.log(err)
     })
@@ -259,7 +263,6 @@ const handlePreviousNext=(move)=>{
                                     <label for='sleeper' className=""> </label>
                                     <span className='text-gray-800 capitalize text-sm font-semibold'>Sleeper (SL)</span>
                                 </div>
-
                             </div>
                         }
                         <div className='flex  text-gray-900 text-sm font-medium justify-between border-b border-gray-300 p-2 gap-x-8'>
@@ -342,27 +345,32 @@ const handlePreviousNext=(move)=>{
 
                 {/* Train Lists */}
                 {
-                    searchItemDetails &&
-                    <div className='w-3/4 p-2'>
-                        <p className='mb-2 capitalize font-normal text-gray-900'>{searchTrains.length} results from <span className='font-bold'>{StationCodeToStationName[searchItemDetails.from]} <TrendingFlatIcon/> {StationCodeToStationName[searchItemDetails.to]} | {searchItemDetails.date.toDateString()} </span>for quota | general</p>
-                        <div className='flex items-center justify-between mb-4'>
-                            <div className='flex gap-x-2'>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#213d77]  text-sm font-semibold text-white'>Sort By | Duration</p>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold'>Show Avalilable Train</p>
+                    loading ? <Loader/> :
+                    <>
+                    {
+                        searchItemDetails &&
+                        <div className='w-3/4 p-2'>
+                            <p className='mb-2 capitalize font-normal text-gray-900'>{searchTrains.length} results from <span className='font-bold'>{StationCodeToStationName[searchItemDetails.from]} <TrendingFlatIcon/> {StationCodeToStationName[searchItemDetails.to]} | {searchItemDetails.date.toDateString()} </span>for quota | general</p>
+                            <div className='flex items-center justify-between mb-4'>
+                                <div className='flex gap-x-2'>
+                                    <p className='border border-gray-300 px-4 py-2 bg-[#213d77]  text-sm font-semibold text-white'>Sort By | Duration</p>
+                                    <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold'>Show Avalilable Train</p>
+                                </div>
+                                <div className='flex gap-x-2'>
+                                    <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5] text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("prev")}><NavigateBeforeIcon/> Previous Day</p>
+                                    <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("next")}>Next Day <NavigateNextIcon/></p>
+                                </div>
                             </div>
-                            <div className='flex gap-x-2'>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5] text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("prev")}><NavigateBeforeIcon/> Previous Day</p>
-                                <p className='border border-gray-300 px-4 py-2 bg-[#f5f5f5]  text-sm font-semibold flex items-center justify-center' onClick={()=>handlePreviousNext("next")}>Next Day <NavigateNextIcon/></p>
-                            </div>
+                            {
+                                searchTrains.map((train)=>{
+                                    return(
+                                        <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails} searchItemDetails={searchItemDetails}/>
+                                    )
+                                })
+                            }
                         </div>
-                        {
-                            searchTrains.map((train)=>{
-                                return(
-                                    <TrainCard details={train} showSchedule={showSchedule} setShowSchedule={setShowSchedule} setScheduleDetails={setScheduleDetails} searchItemDetails={searchItemDetails}/>
-                                )
-                            })
-                        }
-                    </div>
+                    }
+                    </>
                 }
             </div>
         </div>

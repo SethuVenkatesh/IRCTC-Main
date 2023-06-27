@@ -194,7 +194,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                         return (
                             <div className={`border border-gray-200 rounded-md bg-[#f5f5f5] p-2 min-w-[180px] ${selectedClass ==seat.trainClass ? "border-gray-900" : "" }`} onClick={()=>setSelectedClass(seat.trainClass)}>
                                 <p className='font-semibold text-medium'>{seat.trainClass}</p>
-                                <p className='uppercase text-[#37a51d] font-bold'>Available - {seat.totalSeats}</p>
+                                <p className='uppercase text-[#37a51d] font-bold'>Available - {seat.availableSeats}</p>
                             </div>
                         )
                     })
