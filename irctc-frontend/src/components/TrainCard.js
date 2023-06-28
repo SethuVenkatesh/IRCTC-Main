@@ -17,7 +17,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
     const [endDate,setEndDate]=useState()
     const [selectedClass,setSelectedClass]=useState("")
     const [toastMsg,setToastMsg]=useState("")
-
+    const [isDeparted,setIsDeparted]=useState(false)
 
     function formatDuration(durationMinutes) {
         const hours = Math.floor(durationMinutes / 60);
@@ -29,16 +29,30 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
       
 
       const handleBook=()=>{
-        console.log("handle book")
-        console.log(selectedClass)
         let allDetails={...searchItemDetails,...details,duration,stationStartTime:startTime,stationEndTime:endTime,stationEndDate:endDate,selectedClass:selectedClass}
         if(selectedClass==""){
             console.log(selectedClass)
             setToastMsg("Please select Class")
             return;
         }
+        let condition=true
+        details.seatings.map((seat)=>{
+            if(selectedClass==seat.trainClass){
+                if(parseInt(seat.availableSeats)==0){
+                    condition=false
+                    setToastMsg("Tickets are not available in this Class Please select different Class")
+                    return;
+                }
+            }
+        })
+        if(isDeparted){
+            setToastMsg("Train is Departed")
+            return
+        }
         if(userDetails){
-            navigate("/booking/details",{state:allDetails})
+            if(condition){
+                navigate("/booking/details",{state:allDetails})
+            }
         }
         else{
             setShowLogin(true)
@@ -141,6 +155,7 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
             finalMinutes=splitDuration[1]
         }
         let date=new Date(searchItemDetails.date)  
+        let currentDate=new Date()
         if(startTime){
             desiredHours = parseInt(finalHours) + parseInt(startTime.split(":")[0]);
             desiredMinutes = parseInt(finalMinutes) + parseInt(startTime.split(":")[1]);
@@ -149,6 +164,11 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
         var desiredSeconds = 0;
         var desiredMilliseconds = 0;
         date.setHours(desiredHours, desiredMinutes, desiredSeconds, desiredMilliseconds);
+
+        if (currentDate > date) {
+            setIsDeparted(true)
+        }
+
         setEndDate(date)
     },[duration])
 
@@ -194,7 +214,11 @@ const TrainCard = ({details,showSchedule,setShowSchedule,setScheduleDetails,sear
                         return (
                             <div className={`border border-gray-200 rounded-md bg-[#f5f5f5] p-2 min-w-[180px] ${selectedClass ==seat.trainClass ? "border-gray-900" : "" }`} onClick={()=>setSelectedClass(seat.trainClass)}>
                                 <p className='font-semibold text-medium'>{seat.trainClass}</p>
-                                <p className='uppercase text-[#37a51d] font-bold'>Available - {seat.availableSeats}</p>
+                                {
+                                    isDeparted ? <p className='uppercase text-red-500 font-bold'>Train departed</p>:<p className='uppercase text-[#37a51d] font-bold'>Available - {seat.availableSeats}</p>
+                                }
+                                
+                                
                             </div>
                         )
                     })

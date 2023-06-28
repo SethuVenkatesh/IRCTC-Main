@@ -5,14 +5,15 @@ import Footer from '../components/Footer'
 import LoginPopup from '../components/LoginPopUp'
 import { useContext } from 'react'
 import { UserDetailsContext } from '../context/userContext'
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { StationCodeToStationName } from '../constants';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';import AddIcon from '@mui/icons-material/Add';
 import PaymentForm from '../components/PaymentForm';
+import Toaster from '../components/common/Toastifier';
+import api from '../axios';
 
-
-const PassangerInput=({index,details,setPassengerDetails,passengerDetails})=>{
+const PassangerInput=({index,details,setPassengerDetails,passengerDetails,setToastMsg})=>{
     const [passanger,setPassanger]=useState({})
 
     const handleInputChange=(e)=>{
@@ -23,6 +24,10 @@ const PassangerInput=({index,details,setPassengerDetails,passengerDetails})=>{
       }
       const handleDelete=()=>{
         const allPassenger=[...passengerDetails];
+        if(allPassenger.length==1){
+            setToastMsg("Required Alteast One Passengers")
+            return
+        }
         const filteredPassenger=allPassenger.filter((_, i) => i !== index)
         setPassengerDetails(filteredPassenger)
       }
@@ -50,7 +55,7 @@ const PassangerInput=({index,details,setPassengerDetails,passengerDetails})=>{
         </div>
     )
 }
-const TabOne=({allDetails,passengerDetails,setPassengerDetails,userDetails,handleAddPassanger})=>{
+const TabOne=({allDetails,passengerDetails,setPassengerDetails,userDetails,handleAddPassanger,setToastMsg})=>{
     return(
         <>
             {
@@ -94,7 +99,7 @@ const TabOne=({allDetails,passengerDetails,setPassengerDetails,userDetails,handl
                             {
                                 passengerDetails.map((details,index)=>{
                                     return(
-                                        <PassangerInput details={details} setPassengerDetails={setPassengerDetails} index={index} passengerDetails={passengerDetails}/>
+                                        <PassangerInput details={details} setPassengerDetails={setPassengerDetails} index={index} passengerDetails={passengerDetails} setToastMsg={setToastMsg}/>
                                     )
                                 })
                             }
@@ -239,12 +244,6 @@ const TabTwo=({allDetails,passengerDetails,userDetails})=>{
 }
 
 const TabThree=({allDetails,passengerDetails,userDetails})=>{
-    console.log("AllDetails")
-    console.log(allDetails)
-    console.log("PassangerDetails")
-    console.log(passengerDetails)
-    console.log("userDetails")
-    console.log(userDetails)
 
     return(
         <>
@@ -296,8 +295,11 @@ const BookingDetails = () => {
     const [allDetails,setAllDetails]=useState()
     const [passengerDetails,setPassengerDetails]=useState([{name:"",age:"",gender:""}])
     const [selectedTab,setSelectedTab]=useState()
+    const [toastMsg,setToastMsg]=useState("")
     const allTabs=["Passanger Details","Review Journey","Payment"]
     const location=useLocation()
+    const navigate=useNavigate()
+
     useEffect(()=>{
         setAllDetails(location.state)
     },[])
@@ -305,6 +307,26 @@ const BookingDetails = () => {
     useEffect(()=>{
         setSelectedTab(1)
     },[allDetails])
+
+    useEffect(()=>{
+        console.log(allDetails)
+        if(allDetails){
+            let today=new Date(allDetails.date)
+            var date = (today.getDate())+ '/' + (today.getMonth()+1) + '/' + today.getFullYear();
+            // const {trainNumber,trainClass,passengerCount,bookingDate}
+            let check_availablity={
+                trainNumber:allDetails.trainNumber,
+                trainClass:allDetails.selectedClass,
+                passengerCount:passengerDetails.length,
+                bookingDate:date
+            }
+            api.post('booking/check_availablity',{check_availablity}).then((res)=>{
+                if(!res.data.availablity){
+                    setToastMsg("Available Tickets doesn't Satisfy Your Requirements")
+                }   
+            })
+        }
+    },[passengerDetails])
 
     
     const handleAddPassanger=()=>{
@@ -315,14 +337,27 @@ const BookingDetails = () => {
     const handleBack=()=>{
         let tab=selectedTab-1
         if(tab==0){
-
+            navigate(-1)
         }else{
             setSelectedTab(tab)
         }
     }
 
     const handleContinue=()=>{
+        let condition=false
         let tab=selectedTab+1
+        if(tab==2){
+            passengerDetails.map((details)=>{
+                if(details.name==''||details.age==''||details.gender==''){
+                    condition=true
+                    return;
+                }
+            })
+        }
+        if(condition){
+            setToastMsg("Passenger Details Cannot be Empty")
+            return
+        }
         if(tab==4){
             selectedTab(3)
         }
@@ -330,7 +365,6 @@ const BookingDetails = () => {
             setSelectedTab(tab)
         }
     }
-    console.log(selectedTab)
     return (
       <div className='min-h-screen w-full'>
           <Navbar/>
@@ -379,9 +413,13 @@ const BookingDetails = () => {
                 </div>
                 <>
                     { 
-                        selectedTab===1 && allDetails ? <TabOne allDetails={allDetails} passengerDetails={passengerDetails} setPassengerDetails={setPassengerDetails} handleAddPassanger={handleAddPassanger} userDetails={userDetails}/> : selectedTab==2 ? <TabTwo allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/> : <TabThree allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/>
+                        selectedTab===1 && allDetails ? <TabOne allDetails={allDetails} passengerDetails={passengerDetails} setPassengerDetails={setPassengerDetails} handleAddPassanger={handleAddPassanger} userDetails={userDetails} setToastMsg={setToastMsg}/> : selectedTab==2 ? <TabTwo allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/> : <TabThree allDetails={allDetails} passengerDetails={passengerDetails} userDetails={userDetails}/>
                     }
                 </>
+                {
+                    toastMsg.length>=1&&
+                    <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg}/>
+                }
                 <div className='flex items-center gap-x-4'>
                     <p className='px-4 py-2 bg-[#f5f5f5] text-gray-900 font-bold border-2 border-gray-400 cursor-pointer' onClick={handleBack}>Back</p>
                     {

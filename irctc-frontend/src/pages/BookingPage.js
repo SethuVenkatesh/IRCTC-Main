@@ -72,6 +72,7 @@ const {showLogin,setShowLogin}=useContext(UserDetailsContext)
     setSearchItem({...searchItem,to:searchItem.from,from:toggle})
   }
 
+
   const handleSearch=()=>{
     var searchParams=searchItem
     setLoading(true)
@@ -110,8 +111,15 @@ const handlePreviousNext=(move)=>{
         newDate.setDate(newDate.getDate() - 1);
     }
     setSearchItem({...searchItem,date:newDate})
-    handleSearch()
 }
+
+useEffect(()=>{
+    console.log("SearchItem")
+    console.log(searchItem)
+    if(searchItem){
+        handleSearch()
+    }
+},[searchItem])
 
   return (
     <div className=''>

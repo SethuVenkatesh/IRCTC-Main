@@ -90,7 +90,7 @@ router.post("/train_list",async function(req,res){
 
 
 router.post("/check_availablity",async (req,res)=>{
-    const {trainNumber,trainClass,passengerCount,bookingDate}= req.body
+    const {trainNumber,trainClass,passengerCount,bookingDate}= req.body.check_availablity
     const trainDetails=await Train.findOne({trainNumber:trainNumber})
     const dateBookings=await Booking.find({bookingDate:bookingDate,trainNumber:trainNumber,class:trainClass})
     console.log(dateBookings)

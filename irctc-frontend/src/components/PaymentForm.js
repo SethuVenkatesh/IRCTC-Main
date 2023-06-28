@@ -1,9 +1,13 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout';
 import { useEffect,useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 import api from '../axios';
 const PaymentForm = ({allDetails,userDetails,passengerDetails}) => {
   const [amount,setAmount]=useState()
+  const navigate=useNavigate()
+
   useEffect(()=>{
     allDetails.seatings.map((seat)=>{
       if(seat.trainClass==allDetails.selectedClass){
@@ -35,7 +39,9 @@ const PaymentForm = ({allDetails,userDetails,passengerDetails}) => {
     }
     // Send the token to the server for payment processing
     api.post("booking/complete",{paymentDetails}).then((res)=>{
-      console.log(res)
+      if(res.data=="Payment Successfull"){
+        navigate(-1)
+      }
     })
 
   };
