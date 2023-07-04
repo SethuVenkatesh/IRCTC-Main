@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import api from '../axios'
 import Toaster from './common/Toastifier'
+import { useNavigate } from 'react-router-dom'
 
 const Tab1=({registerDetails,setRegisterDetails})=>{  
   
@@ -200,7 +201,7 @@ const Tab3=({registerDetails,setRegisterDetails})=>{
                         type="text"
                         className="border border-gray-300 py-2 px-3 text-blue-900 placeholder-[#082b71] "
                         placeholder="State"
-                        value={registerDetails.street}
+                        value={registerDetails.state}
                         name='state'
                         onChange={handleChange}
                     />
@@ -217,11 +218,13 @@ const Tab3=({registerDetails,setRegisterDetails})=>{
 const RegisterContainer = () => {
    
     const [toastMsg,setToastMsg]=useState("")
+    const [isSuceess,setIsSuccess]=useState(false)
 
     const allTabs=["basic details","personal details","address"]
     const [selectedTab,setSelectedTab]=useState(allTabs[0])
     const [prevBtnText,setPrevBtnText]=useState("cancel")
     const [nextBtnText,setNextBtnText]=useState("continue")
+    const navigate=useNavigate()
     const [registerDetails,setRegisterDetails]=useState({
         userName:"",
         password:"",
@@ -269,7 +272,11 @@ const RegisterContainer = () => {
                 const userDetails={...registerDetails}
                 delete userDetails["confirmPassword"]
                 api.post('user/register',{userDetails}).then(res=>{
-                    console.log("user created successfully")
+                    setToastMsg("User Created Successfully")
+                    setIsSuccess(true)
+                    setTimeout(()=>{
+                        navigate("/home")
+                    },5000)
                 })
             }
         }
@@ -398,7 +405,7 @@ const RegisterContainer = () => {
             </div>
             {
                 toastMsg.length>=1&&
-                <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg}/>
+                <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg} isSuceess={isSuceess}/>
             }
             <div className='flex items-center border-b-2 border-gray-300'>
               {
