@@ -6,12 +6,21 @@ const SearchSelect = ({fieldText,searchItem,setSearchItem,showText}) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = [
-    { value: 'MDU', label: 'Madurai Jn - MDU',icon:<NearMeIcon/>},
+    { value: 'MDU', label: 'Madurai Jn - MDU'},
     { value: 'MS', label: 'Chennai Egmore - MS' },
     { value: 'SDN', label: 'Sholavandan - SDN' },
     { value: 'DG', label: 'Dindigul Jn - DG' },
+    { value: 'TPJ', label: 'Tiruchchirapali'},
+    { value: 'ALU', label: 'Ariyalur' },
+    { value: 'VRI', label: 'Vridhachalam Jn' },
+    { value: 'VM', label: 'Villupuram Jn' },
+    { value: 'CGL', label: 'Chengalpattu'},
+    { value: 'TBM', label: 'Tambaram' },
+    { value: 'TJ', label: 'Thanjavur' },
+    { value: 'KUM', label: 'Kumbakonam' },
+    { value: 'MV', label: 'Mayiladuturai Jn' },
+    { value: 'CDM', label: 'Chidambaram' },
   ];
-
 
   useEffect(()=>{
     for(let i=0;i<options.length;i++){

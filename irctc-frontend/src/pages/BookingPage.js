@@ -55,7 +55,7 @@ const {showLogin,setShowLogin}=useContext(UserDetailsContext)
       </div>
     );
     }
-
+    
     const handleChangeClass=(option)=>{
     setClassOption(option)
     setclassDropDown(false)
@@ -98,6 +98,27 @@ const {showLogin,setShowLogin}=useContext(UserDetailsContext)
         console.log(err)
     })
 },[])
+
+useEffect(() => {
+    // Function to handle click events outside the dropdown
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.quota-dropdown')) {
+        setquotaDropDown(false)
+      }
+      if (!event.target.closest('.class-dropdown')) {
+        setclassDropDown(false)
+      }
+    };
+
+    // Attach the event listener on mount
+    window.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const [showSchedule,setShowSchedule]=useState(false)
   const [scheduleDetails,setScheduleDetails]=useState()
 
@@ -161,7 +182,7 @@ useEffect(()=>{
                                         <div className='absolute w-full top-full left-0 bg-gray-50 shadow-lg border-2 border-gray-200 w-max h-48 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-w-1'> 
                                             {
                                                 quotadropDownOptions.map((option)=>
-                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white ${quotaOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeQuota(option)}>{option}</p>
+                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white quota-dropdown ${quotaOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeQuota(option)}>{option}</p>
                                                 )
                                             }
                                         </div>
@@ -178,7 +199,7 @@ useEffect(()=>{
                                         <div className='absolute w-full top-full left-0 bg-gray-50 shadow-lg border-2 border-gray-200 w-max h-48 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-w-1'> 
                                             {
                                                 classdropDownOptions.map((option)=>
-                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white ${classOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeClass(option)}>{option}</p>
+                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white class-dropdown ${classOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeClass(option)}>{option}</p>
                                                 )
                                             }
                                         </div>

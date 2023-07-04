@@ -1,16 +1,16 @@
 import React ,{useEffect, useState}from 'react'
-import NearMeIcon from '@mui/icons-material/NearMe';
-import PlaceIcon from '@mui/icons-material/Place';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DatePicker from 'react-datepicker';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import WidgetsIcon from '@mui/icons-material/Widgets';
+import Toaster from './common/Toastifier';
 
 import SearchSelect from './Dummy';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
+
 
 const BookingContainer = () => {
     const [searchItem,setSearchItem]=useState({
@@ -19,6 +19,8 @@ const BookingContainer = () => {
         date:new Date(),
 
     })
+    const [toastMsg,setToastMsg]=useState("")
+
     const navigate=useNavigate()
     //animate arrow
     const [arrow,setArrow]=useState(false)
@@ -32,7 +34,7 @@ const BookingContainer = () => {
     const [quotaOption,setQuotaOption]=useState(quotadropDownOptions[0])
 
 
-
+    
     //datepicker custom component
     function CustomInput({ value, onClick }) {
         return (
@@ -62,13 +64,36 @@ const BookingContainer = () => {
     }
 
     const handleSearch=()=>{
-        navigate('/booking/train_list',{state:searchItem})
+        if(searchItem.from==''){
+            setToastMsg("From Station is Required")
+        }
+        else if(searchItem.to==''){
+            setToastMsg("To Station is Required")
+        }
+        else{
+            navigate('/booking/train_list',{state:searchItem})
+        }
     }
 
-    useEffect(()=>{
-       
-
-    },[])
+    useEffect(() => {
+        // Function to handle click events outside the dropdown
+        const handleClickOutside = (event) => {
+          if (!event.target.closest('.quota-dropdown')) {
+            setquotaDropDown(false)
+          }
+          if (!event.target.closest('.class-dropdown')) {
+            setclassDropDown(false)
+          }
+        };
+    
+        // Attach the event listener on mount
+        window.addEventListener('mousedown', handleClickOutside);
+    
+        // Clean up the event listener on unmount
+        return () => {
+          window.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
 
   return (
     <div className="mt-28  min-h-[700px] relative bg-[url('https://www.irctc.co.in/nget/home_page_banner1.e6749c3d9698d1ac7608.jpg')] bg-no-repeat w-full bg-cover ">
@@ -76,6 +101,10 @@ const BookingContainer = () => {
             <p className='uppercase font-bold text-4xl'>indain railways</p>
             <p className='capitalize font-baseline text-xl'>safety | security | punctuality</p>
         </div>
+        {
+            toastMsg.length>=1&&
+            <Toaster ToastMessage={toastMsg} setToastMsg={setToastMsg}/>
+        }
         <div className='absolute rounded-md top-10 left-20 '>
             <div className='relative w-[100%]'>
                 <div className='flex justify-between'>
@@ -131,7 +160,7 @@ const BookingContainer = () => {
                                         <div className='absolute w-full top-full left-0 bg-gray-50 shadow-lg border-2 border-gray-200 w-max h-48 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-w-1'> 
                                             {
                                                 quotadropDownOptions.map((option)=>
-                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white ${quotaOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeQuota(option)}>{option}</p>
+                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white quota-dropdown ${quotaOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeQuota(option)}>{option}</p>
                                                 )
                                             }
                                         </div>
@@ -149,7 +178,7 @@ const BookingContainer = () => {
                                         <div className='absolute w-full top-full left-0 bg-gray-50 shadow-lg border-2 border-gray-200 w-max h-48 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-w-1'> 
                                             {
                                                 classdropDownOptions.map((option)=>
-                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white ${classOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeClass(option)}>{option}</p>
+                                                    <p className={`px-2 py-1  text-gray-700 hover:bg-[#007ad9] hover:text-white class-dropdown ${classOption==option ? 'bg-[#007ad9] text-white':''}`} onClick={()=>handleChangeClass(option)}>{option}</p>
                                                 )
                                             }
                                         </div>
