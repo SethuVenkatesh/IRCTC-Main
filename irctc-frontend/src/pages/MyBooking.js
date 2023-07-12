@@ -18,6 +18,8 @@ const TrainCard=({details})=>{
 
     const [endDate,setEndDate]=useState()
 
+    const [isExpand,setIsExpand]=useState(false)
+
     function formatDuration(durationMinutes) {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
@@ -140,7 +142,7 @@ const TrainCard=({details})=>{
     },[duration])
     
     return (
-        <div className='border border-2 rounded-sm mb-2 shadow-md'>
+        <div className='border border-2 rounded-sm mb-2 shadow-md cursor-pointer' onClick={()=>setIsExpand(!isExpand)}>
             <div className='flex items-center justify-between px-2 py-2 bg-[#F9F9F9]'>
                 <p className='font-bold text-md uppercase'>{details.trainDetails.trainName} ({details.trainDetails.trainNumber})</p>
                 <p>
@@ -166,7 +168,67 @@ const TrainCard=({details})=>{
                     </div>
                     
                 </div>
-                <p className='text-green-900 uppercase font-semibold text-sm px-2 py-1 bg-green-200 w-max rounded-sm mt-2'>Status : Booked</p>
+                <p className='text-green-900 uppercase font-semibold text-sm px-2 py-1 bg-green-200 w-max rounded-sm mt-2 mb-2'>Status : Booked</p>
+                <p className='bg-[#f9f9f9] p-1 px-2 m-auto w-max mb-2'>{details.bookingDetails.passengerDetails.length} Adults | {details.bookingDetails.class} | General</p>
+                {
+                    isExpand &&
+                    <div className='border-t-2 p-2'>
+                        <div className=''>
+                            <p className='text-md font-semibold mb-2'>Passenger information</p>
+                            {
+                                details.bookingDetails.passengerDetails.map((data,index)=>{
+                                    return(
+                                        <div className='pb-2 flex items-center gap-x-2 capitalize'>
+                                            <p className='font-semibold text-md'>{index+1}. {data.name}</p>
+                                            <p className='font-semibold text-md'>{data.age} | {data.gender}</p>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className='flex '>
+                            <div className='w-1/2 border border-2 flex  justify-between flex-col '>
+                                <p className='font-bold text-mg bg-[#E1E1E1] py-1 text-center'>Booking Details</p>
+                                <div className='flex justify-between p-2'>
+                                    <p>Transaction ID</p>
+                                    <p>{details.bookingDetails._id}</p>
+                                </div>
+                                <div className='flex justify-between p-2'>
+                                    <p>Ticket Type</p>
+                                    <p>E- Ticket</p>
+                                </div>
+                                <div className='flex justify-between p-2'>
+                                    <p>Date of Boarding</p>
+                                    <p>{details.bookingDetails.bookingDate} | {startTime}</p>
+                                </div>
+                                <div className='flex justify-between p-2'>
+                                    <p>Vikalp Status</p>
+                                    <p>No</p>
+                                </div>
+                                <div className='flex justify-between p-2'>
+                                    <p>Booked From</p>
+                                    <p>IRCTC Website</p>
+                                </div>
+                            </div>
+                            <div className='w-1/2 border-2 border flex  flex-col'>
+                                <p className='font-bold text-mg bg-[#E1E1E1] py-1 text-center'>Payment Details</p>
+                                <div className='flex justify-between p-2'>
+                                    <p>Number of Passengers</p>
+                                    <p>{details.bookingDetails.passengerDetails.length}</p>
+                                </div>
+                                <div className='flex justify-between p-2'>
+                                    <p>Ticket Fare</p>
+                                    <p>{details.bookingDetails.ticketPrice}</p>
+                                </div>
+                                <div className='flex justify-between p-2 font-bold '>
+                                    <p>Total Amount</p>
+                                    <p>{details.bookingDetails.passengerDetails.length * details.bookingDetails.ticketPrice}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     )
@@ -190,6 +252,33 @@ const MyBooking = () => {
 
     const handleTabChange=(tabTitle)=>{
         setTab(tabTitle)
+        let date=Date.now()
+        let datas=[]
+        if(tabTitle==tabTitles[1]){
+            bookings.map((book)=>{
+                let bookingDate=book.bookingDetails.bookingDate.split("/")
+                let bdate=new Date(bookingDate[1]+"/"+bookingDate[0]+"/"+bookingDate[2]) 
+                if(bdate>date){
+                    datas.push(book)
+                }
+            })
+            setFilteredBookings(datas)
+        }
+        else if(tabTitle==tabTitles[2]){
+            bookings.map((book)=>{
+                let bookingDate=book.bookingDetails.bookingDate.split("/")
+                let bdate=new Date(bookingDate[1]+"/"+bookingDate[0]+"/"+bookingDate[2]) 
+                if(bdate<date){
+                    datas.push(book)
+                }
+            })
+            setFilteredBookings(datas)
+
+        }else{
+            setFilteredBookings(bookings)
+        }
+
+        console.log(datas)
 
     }
 
@@ -212,14 +301,19 @@ const MyBooking = () => {
                     })
                 }
             </div>
-            
+                <div className='w-3/4'>
                 {
+                    filteredBookings.length==0 && <p className='text-red-500 font-semibold text-center'>No Records Found</p>
+                }
+                {
+                   
                     filteredBookings.map((book)=>{
                         return(
                             <TrainCard details={book}/>
                         )
                     })
                 }
+                </div>
         </div>
         <Footer/>
     </div>
