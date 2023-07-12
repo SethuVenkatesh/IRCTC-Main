@@ -3,6 +3,8 @@ var router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Train=require("../models/train")
+const Booking=require("../models/booking")
 const {auth} = require('../middleware/authMiddleware');
 const { route } = require('./trains');
 
@@ -96,6 +98,21 @@ router.post("/update",async function(req,res){
     return res.status(200).send("Password updated successfully")
 })
 
+router.post("/bookings",async function(req,res){
+    const {userId}=req.body.userDetails
+    let allBookings=await Booking.find().populate('user').exec()
+    let bookings=[]
+    for(let bookingIndex=0;bookingIndex<allBookings.length;bookingIndex++){
+        let bookingDetails=allBookings[bookingIndex]
+        if(allBookings[bookingIndex].user.userName==userId){
+            let trainDetails=await Train.findOne({trainNumber:bookingDetails.trainNumber})
+            let allDetails={bookingDetails,trainDetails}
+            bookings.push(allDetails)
+        }
+    }
+    
+    res.status(200).send(bookings)   
+})
 
 const generateToken = (id) =>{
     return jwt.sign({id}, "IRCTC_LOGIN_CREDENTIAL_SECRET", { expiresIn : '300s'})

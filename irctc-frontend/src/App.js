@@ -12,7 +12,7 @@ import { useContext } from 'react';
 import { RegisterPage } from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 import BookingDetails from './pages/BookingDetails';
-
+import MyBooking from './pages/MyBooking';
 
 function App() {
 
@@ -27,6 +27,7 @@ function App() {
           <Route index path='/forgot_password' element={<ForgotPassword />}/>
           <Route index path='/booking/train_list' element={<BookingPage />}/>
           <Route index path='/booking/details' element={<BookingDetails />}/>
+          <Route index path='/my_booking' element={<MyBooking />}/>
           <Route path='/train'>
             <Route index path='all' element={<AllTrain/>}/>
             <Route path='new' element={<NewTrain/>}/>
