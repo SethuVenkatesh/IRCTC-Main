@@ -33,7 +33,8 @@ function LoginPopup() {
         setLoading(true)
         await api.post('/user/login',{loginData}).then(res=>{
           console.log(res.data)
-          if(res.data.user){
+          if(res.data){
+            localStorage.setItem('irctc-id',res.data.userName)
             setUserDetails(res.data)
             setShowLogin(false)
           }

@@ -75,15 +75,18 @@ router.post("/login", async function(req,res) {
     const user = await User.findOne({userName});
 
     if(user && (await bcrypt.compare(password, user.password))){
-        return res.status(201).json({
-            user,
-            token : generateToken(user._id),
-            status : "Login Successfully"
-        });
+        return res.status(201).send(user);
     }else{
         return res.status(201).send({msg : "Invalid User Data"});
     }
 
+})
+
+router.post("/userDetails",async function(req,res){
+    let userName=req.body.irctcId
+    const user = await User.findOne({userName});
+    console.log(user)
+    return res.status(200).send(user)
 })
 
 router.post("/update",async function(req,res){

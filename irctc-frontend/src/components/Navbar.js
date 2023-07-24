@@ -35,6 +35,7 @@ const Navbar = () => {
   }
 
   const handleLogOut=()=>{
+    localStorage.removeItem('irctc-id')
     setUserDetails(undefined)
 
   }
@@ -57,7 +58,8 @@ const Navbar = () => {
                         <p className={`uppercase text-sm px-2 py-1 cursor-pointer bg-[#213d77] text-white`} onClick={()=>handleLogOut()}>
                             logout
                         </p>
-                        <p> Welcome {userDetails.user.firstName} ({userDetails.user.userName})</p>
+                        
+                        <p> Welcome {userDetails.firstName} ({userDetails.userName})</p>
             
                         {
                             topAuthLabel?.map((label)=>{

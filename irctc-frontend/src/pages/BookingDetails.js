@@ -112,7 +112,7 @@ const TabOne=({allDetails,passengerDetails,setPassengerDetails,userDetails,handl
                         </div>
                         {
                             userDetails &&
-                            <p className='px-4 py-3 text-md font-semibold'>(Ticket details will be sent to email- {userDetails.user.email} and registered mobile number {userDetails.user.phoneNumber})</p>
+                            <p className='px-4 py-3 text-md font-semibold'>(Ticket details will be sent to email- {userDetails.email} and registered mobile number {userDetails.phoneNumber})</p>
                         }
                         
                     </div>
@@ -201,7 +201,7 @@ const TabTwo=({allDetails,passengerDetails,userDetails})=>{
             <div className='border-2 border-gray-300 mb-4'>
                 {
                     userDetails &&
-                    <p className='px-4 py-3 text-md font-semibold'>(Ticket details will be sent to email- {userDetails.user.email} and registered mobile number {userDetails.user.phoneNumber})</p>
+                    <p className='px-4 py-3 text-md font-semibold'>(Ticket details will be sent to email- {userDetails.email} and registered mobile number {userDetails.phoneNumber})</p>
                 }  
                        
             </div>
